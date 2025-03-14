@@ -5,6 +5,8 @@
     "files.exclude": {
         "**/.git": true,
         "**/bin": true,
+        "**/.angular": true,
+        "**/node_modules": true,
         "**/obj": true
     }
 }

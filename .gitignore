@@ -1,3 +1,6 @@
+.angular
+.vs
 bin
-obj
 Migrations
+node_modules
+obj
