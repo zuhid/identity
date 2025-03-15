@@ -1,3 +1,16 @@
+# Install mssql as part of docker
+
+```
+docker run \
+  --name mssql-local \
+  --hostname mssql-local \
+  --publish 1433:1433 \
+  --env "ACCEPT_EULA=Y" \
+  --env "SA_PASSWORD=P@ssw0rd" \
+  --detach \
+  mcr.microsoft.com/mssql/server:2022-latest
+```
+
 # Sql Server
 
 ```

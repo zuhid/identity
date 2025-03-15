@@ -6,41 +6,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Zuhid.Base;
 
-public abstract class BaseRepository<TContext, TModel, TEntity>
+public abstract class BaseRepository<TContext, TModel, TEntity>(TContext context)
   where TContext : IDbContext
   where TModel : BaseModel
   where TEntity : BaseEntity
 {
-    public abstract IQueryable<TModel> Query { get; }
-    protected TContext context;
+  public abstract IQueryable<TModel> Query { get; }
 
-    public BaseRepository(TContext context) => this.context = context;
+  public async Task<List<TModel>> Get(Guid id) => await Query.Where(n => n.Id.Equals(id)).ToListAsync();
 
-    public async Task<List<TModel>> Get(Guid id) => await Query.Where(n => n.Id.Equals(id)).ToListAsync();
+  public async Task<SaveRespose> Add(TEntity entity)
+  {
+    entity.Updated = DateTime.UtcNow;
+    context.Set<TEntity>().Add(entity);
+    _ = await context.SaveChangesAsync();
+    return new SaveRespose { Updated = entity.Updated };
+  }
 
-    public async Task<bool> Add(TEntity entity)
+  public async Task<SaveRespose> Update(TEntity entity)
+  {
+    // the updated value is set to make sure no one else modifed the record since the last read
+    context.Entry(entity).Property(p => p.Updated).OriginalValue = context.Entry(entity).Property(p => p.Updated).CurrentValue;
+    entity.Updated = DateTime.UtcNow; // Update the record with to have the current utc value
+    context.Set<TEntity>().Update(entity);
+    _ = await context.SaveChangesAsync();
+    return new SaveRespose { Updated = entity.Updated };
+  }
+
+  public async Task<bool> Delete(Guid id)
+  {
+    var entity = await context.Set<TEntity>().FirstOrDefaultAsync(m => m.Id.Equals(id));
+    if (entity != null)
     {
-        entity.Updated = DateTime.UtcNow;
-        context.Set<TEntity>().Add(entity);
-        return (await context.SaveChangesAsync()) == 1;
+      context.Set<TEntity>().Remove(entity);
+      return (await context.SaveChangesAsync()) == 1;
     }
-
-    public async Task<bool> Update(TEntity entity)
-    {
-        context.Entry(entity).Property(p => p.Updated).OriginalValue = context.Entry(entity).Property(p => p.Updated).CurrentValue;
-        context.Entry(entity).Property(p => p.Updated).CurrentValue = DateTime.UtcNow;
-        context.Set<TEntity>().Update(entity);
-        return (await context.SaveChangesAsync()) == 1;
-    }
-
-    public async Task<bool> Delete(Guid id)
-    {
-        var entity = await context.Set<TEntity>().FirstOrDefaultAsync(m => m.Id.Equals(id));
-        if (entity != null)
-        {
-            context.Set<TEntity>().Remove(entity);
-            return (await context.SaveChangesAsync()) == 1;
-        }
-        return false;
-    }
+    return false;
+  }
 }

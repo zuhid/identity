@@ -10,8 +10,8 @@ namespace Zuhid.Identity;
 
 public class IdentityContext : DbContext, IDbContext
 {
-    public IdentityContext(DbContextOptions<IdentityContext> options) : base(options) { }
+  public IdentityContext(DbContextOptions<IdentityContext> options) : base(options) { }
 
-    public DbSet<User> User { get; set; }
+  public DbSet<User> User { get; set; }
 
 }

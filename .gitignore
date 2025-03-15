@@ -4,3 +4,4 @@ bin
 Migrations
 node_modules
 obj
+TestResults
