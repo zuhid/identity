@@ -42,3 +42,24 @@ ng new \
   --style=scss \
   identity
 ```
+
+# Run tests
+
+https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage?tabs=windows
+
+`dotnet tool install -g dotnet-reportgenerator-globaltool`
+
+```
+cd Identity.Tests
+rm -rf TestResults
+dotnet test --collect:"XPlat Code Coverage"
+dotnet reportgenerator -reports:"TestResults/*/coverage.cobertura.xml" -targetdir:"TestResults/CoverageReport" -reporttypes:Html
+
+
+rm -rf Base.Tests/TestResults
+rm -rf Identity.Tests/TestResults
+dotnet test --collect:"XPlat Code Coverage"
+dotnet reportgenerator -reports:"Base.Tests/TestResults/*/coverage.cobertura.xml" -targetdir:"Base.Tests/TestResults/CoverageReport" -reporttypes:Html
+dotnet reportgenerator -reports:"Identity.Tests/TestResults/*/coverage.cobertura.xml" -targetdir:"Identity.Tests/TestResults/CoverageReport" -reporttypes:Html
+-reporttypes:Html
+```

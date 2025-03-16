@@ -45,6 +45,6 @@ start-api() { (
   dotnet run
 ); }
 
-build-server
+# build-server
 build-database "Identity"
-build-database-log
+# build-database-log

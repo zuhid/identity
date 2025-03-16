@@ -25,12 +25,6 @@ namespace Zuhid.Identity.Mappers
         Password = model.Password,
         Phone = model.Phone,
       };
-
-    }
-
-    public override Models.User GetModel(Entities.User entity)
-    {
-      throw new NotImplementedException();
     }
   }
 }

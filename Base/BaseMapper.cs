@@ -9,7 +9,7 @@ namespace Zuhid.Base
   {
     public abstract TEntity GetEntity(TModel model);
 
-    public abstract TModel GetModel(TEntity entity);
+    public virtual TModel GetModel(TEntity entity) => throw new NotImplementedException();
 
     public List<TEntity> GetEntityList(List<TModel> modelList)
     {
@@ -24,7 +24,5 @@ namespace Zuhid.Base
       entityList.ForEach(entity => modelList.Add(GetModel(entity)));
       return modelList;
     }
-
-
   }
 }

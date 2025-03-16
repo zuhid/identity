@@ -33,14 +33,8 @@ public abstract class BaseRepository<TContext, TModel, TEntity>(TContext context
     return new SaveRespose { Updated = entity.Updated };
   }
 
-  public async Task<bool> Delete(Guid id)
+  public async Task<int> Delete(Guid id)
   {
-    var entity = await context.Set<TEntity>().FirstOrDefaultAsync(m => m.Id.Equals(id));
-    if (entity != null)
-    {
-      context.Set<TEntity>().Remove(entity);
-      return (await context.SaveChangesAsync()) == 1;
-    }
-    return false;
+    return await context.Set<TEntity>().Where(e => e.Id.Equals(id)).ExecuteDeleteAsync();
   }
 }

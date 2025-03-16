@@ -56,7 +56,6 @@ public class BaseWebApplication
     builder.Services.AddDbContext<TContext>(options => options
       .UseSqlServer(connectionString)
       .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // setting to no tracking to improve performance
-      .EnableSensitiveDataLogging() // log sql param values, should be removed in production
     );
     builder.Services.AddScoped<ITContext, TContext>();
   }

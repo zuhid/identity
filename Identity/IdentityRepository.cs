@@ -12,7 +12,7 @@ public interface IIdentityRepository
   Task<List<Models.User>> Get(Guid id);
   Task<SaveRespose> Add(Entities.User entity);
   Task<SaveRespose> Update(Entities.User entity);
-  Task<bool> Delete(Guid id);
+  Task<int> Delete(Guid id);
 }
 
 public class IdentityRepository(IdentityContext context) : BaseRepository<IdentityContext, Models.User, Entities.User>(context), IIdentityRepository
