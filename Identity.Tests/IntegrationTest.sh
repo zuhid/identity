@@ -5,7 +5,7 @@ ouptutDir="TestResults"
 ################################################## functions ##################################################
 
 get() {
-  curl -i -s -X "GET" "$baseUrl/$1" >"$ouptutDir//${1/\//__}.get.json"
+  curl -i -s -X "GET" "$baseUrl/$1" >"$ouptutDir//${1//\//__}.get.json"
 }
 
 post() {
@@ -45,5 +45,5 @@ put 'User' '{
   "password": "P@ssw0rd",
   "phone": "222-444-4444"
 }'
-get "User/f08b13f0-1e24-48f7-a205-029de54eedc6"
+get "User?Id=f08b13f0-1e24-48f7-a205-029de54eedc6"
 delete "User/Id/f08b13f0-1e24-48f7-a205-029de54eedc6"
