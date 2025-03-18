@@ -7,6 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AnalysisMode>All</AnalysisMode>
+    <UserSecretsId>aaf3e10d-8bed-4c48-85db-1e9ad9148ccc</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

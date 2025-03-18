@@ -63,3 +63,8 @@ dotnet reportgenerator -reports:"Base.Tests/TestResults/*/coverage.cobertura.xml
 dotnet reportgenerator -reports:"Identity.Tests/TestResults/*/coverage.cobertura.xml" -targetdir:"Identity.Tests/TestResults/CoverageReport" -reporttypes:Html
 -reporttypes:Html
 ```
+
+# Secrets
+
+- `dotnet user-secrets init`
+- `dotnet user-secrets set sql_credential "User Id=sa;Password=P@ssw0rd"`
