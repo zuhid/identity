@@ -25,7 +25,8 @@ public class BaseWebApplication
         {
             // options.Filters.Add(new AuthorizeFilter());
             // options.Filters.Add(typeof(LogExceptionFilter));
-            options.Filters.Add(typeof(ActionFilter));
+            options.Filters.Add<ActionFilter>();
+            options.Filters.Add<ExceptionFilter>();
         });
         services.AddSwaggerGen(AddSwagger);
         return this;

@@ -1,32 +1,30 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
 
 namespace Zuhid.Base;
 public class DatabaseLoggerProvider(LogContext logContext) : ILoggerProvider
 {
-    public ILogger CreateLogger(string categoryName) => new DatabaseLogger(logContext);
+    public ILogger CreateLogger(string categoryName) => new DatabaseLogger(logContext, categoryName);
 
     public void Dispose() => GC.SuppressFinalize(this);
 }
 
-public class DatabaseLogger(LogContext logContext) : ILogger
+public class DatabaseLogger(LogContext logContext, string categoryName) : ILogger
 {
     IDisposable ILogger.BeginScope<TState>(TState state) => null;
     public bool IsEnabled(LogLevel logLevel) => true;
+
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {
         logContext.Add(new Log
         {
             Updated = DateTime.UtcNow,
             LogLevel = logLevel.ToString(),
-            Category = eventId.Name ?? "categoryName",
+            Category = categoryName,
             EventId = $"{eventId.Id}",
+            EventName = eventId.Name ?? "",
+            State = state?.ToString() ?? "",
             Exception = Formatter(state, exception)
         });
         try
@@ -41,7 +39,7 @@ public class DatabaseLogger(LogContext logContext) : ILogger
     }
 
 
-    private string Formatter<TState>(TState state, Exception exception)
+    private static string Formatter<TState>(TState state, Exception exception)
     {
         if (exception != null)
         {
@@ -55,7 +53,7 @@ public class DatabaseLogger(LogContext logContext) : ILogger
                     var index = item.IndexOf(" in ");
                     if (index > 0)
                     {
-                        stacktrace.Add(new { At = item.Substring(0, index).Trim(), In = item.Substring(index + 3).Trim() });
+                        stacktrace.Add(new { At = item[..index].Trim(), In = item[(index + 3)..].Trim() });
                     }
                     else
                     {
@@ -63,20 +61,19 @@ public class DatabaseLogger(LogContext logContext) : ILogger
                     }
                 }
             }
-            return JsonSerializer.Serialize(
-              new { exception.Message, stacktrace, exception.Data },
-              new JsonSerializerOptions
-              {
-                  PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                  DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                  Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-              }
-            );
+            return JsonSerializer.Serialize(new { exception.Message, stacktrace, exception.Data }, jsonSerializerOptions);
         }
         else
         {
-            return state?.ToString() ?? "";
+            return string.Empty;
         }
     }
+
+    private static JsonSerializerOptions jsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
 }
 

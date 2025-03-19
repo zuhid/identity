@@ -15,20 +15,36 @@ public abstract class BaseRepository<TContext, TModel, TEntity>(TContext context
 
     public async Task<SaveRespose> Add(TEntity entity)
     {
-        entity.Updated = DateTime.UtcNow;
-        context.Set<TEntity>().Add(entity);
-        _ = await context.SaveChangesAsync();
-        return new SaveRespose { Updated = entity.Updated };
+        try
+        {
+            entity.Updated = DateTime.UtcNow;
+            context.Set<TEntity>().Add(entity);
+            _ = await context.SaveChangesAsync();
+            return new SaveRespose { Updated = entity.Updated };
+        }
+        catch (Exception ex)
+        {
+            ex.Data.Add("entity", entity);
+            throw;
+        }
     }
 
     public async Task<SaveRespose> Update(TEntity entity)
     {
-        // the updated value is set to make sure no one else modifed the record since the last read
-        context.Entry(entity).Property(p => p.Updated).OriginalValue = context.Entry(entity).Property(p => p.Updated).CurrentValue;
-        entity.Updated = DateTime.UtcNow; // Update the record with to have the current utc value
-        context.Set<TEntity>().Update(entity);
-        _ = await context.SaveChangesAsync();
-        return new SaveRespose { Updated = entity.Updated };
+        try
+        {
+            // the updated value is set to make sure no one else modifed the record since the last read
+            context.Entry(entity).Property(p => p.Updated).OriginalValue = context.Entry(entity).Property(p => p.Updated).CurrentValue;
+            entity.Updated = DateTime.UtcNow; // Update the record with to have the current utc value
+            context.Set<TEntity>().Update(entity);
+            _ = await context.SaveChangesAsync();
+            return new SaveRespose { Updated = entity.Updated };
+        }
+        catch (Exception ex)
+        {
+            ex.Data.Add("entity", entity);
+            throw;
+        }
     }
 
     public async Task<int> Delete(Guid id)
