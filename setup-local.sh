@@ -58,7 +58,7 @@ start-api() { (
 clear
 # dotnet tool restore
 # build-server
-# docker start mssql-local
-# build-database-log
-# build-database "Identity" "IdentityContext"
+docker start mssql-local
+build-database-log
+build-database "Identity" "IdentityContext"
 # start-api "Identity"

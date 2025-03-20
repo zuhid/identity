@@ -13,8 +13,7 @@ public class Program
         app.AddDatabase<IdentityContext, IdentityContext>(appSetting.Identity);
         app.AddDatabase<LogContext, LogContext>(appSetting.Log);
 
-        var serviceProvider = app.builder.Services.BuildServiceProvider();
-        using (var databaseLoggerProvider = new DatabaseLoggerProvider(serviceProvider.GetRequiredService<LogContext>()))
+        using (var databaseLoggerProvider = new DatabaseLoggerProvider(app.builder.Services.BuildServiceProvider().GetRequiredService<LogContext>()))
         {
             app.builder.Logging.AddProvider(databaseLoggerProvider);
         }
