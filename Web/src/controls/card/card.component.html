@@ -1,0 +1,12 @@
+<div id="{{ cardId() }}" class="card">
+  <div class="card-header">
+    <span>{{ header }}</span>
+    <a class="card-help" (click)="helpClick.emit()">?</a>
+  </div>
+  <div class="card-body">
+    <form>
+      <ng-content></ng-content>
+      <nc-button *ngIf="submit" id="submit" [text]="submit" (click)="submitClick.emit()"></nc-button>
+    </form>
+  </div>
+</div>

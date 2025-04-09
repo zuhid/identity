@@ -38,6 +38,7 @@ ng new \
   --skip-git \
   --skip-install \
   --ssr=false \
+  --standalone=fale \
   --strict \
   --style=scss \
   identity
