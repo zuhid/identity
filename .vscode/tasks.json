@@ -1,0 +1,39 @@
+{
+  // See https://code.visualstudio.com/docs/editor/tasks for more information
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Setup Dev Environment",
+      "group": "build",
+      "type": "shell",
+      "command": "${workspaceFolder}/.vscode/setup-dev.sh",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Run Identity",
+      "type": "shell",
+      "command": "dotnet run",
+      "options": {
+        "cwd": "Identity"
+      }
+    },
+    {
+      "label": "Run Web",
+      "type": "shell",
+      "command": "npm start",
+      "options": {
+        "cwd": "Web"
+      }
+    },
+    {
+      "label": "Run Web and Identity",
+      "group": "build",
+      "dependsOn": [
+        "Run Identity",
+        "Run Web"
+      ]
+    }
+  ]
+}

@@ -1,33 +1,29 @@
 ################################################## variables ##################################################
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+SQL_USERNAME="sa"
+SQL_PASSWORD="P@ssw0rd"
 
 ################################################## functions ##################################################
 build-server() {
-  docker container rm --force mssql-local
+  echo "Building SQL Server container..."
+  # remove old container
+  docker container stop mssql-dev
+  docker container rm mssql-dev
 
+  # create new container
   docker run \
-    --name mssql-local \
-    --hostname mssql-local \
+    --name mssql-dev \
+    --hostname mssql-dev \
     --publish 1433:1433 \
     --env "ACCEPT_EULA=Y" \
-    --env "SA_PASSWORD=P@ssw0rd" \
+    --env "SA_PASSWORD=$SQL_PASSWORD" \
     --detach \
     mcr.microsoft.com/mssql/server:2022-latest
 }
 
-build-database() { (
-  cd "$SCRIPT_DIR/$1"
-  dotnet ef database update 0 --context $2
-  rm -rf Migrations
-  dotnet ef migrations add Initial --context $2
-  dotnet build
-  dotnet ef database update --context $2
-  # dotnet ef migrations script --context $2 --idempotent --output Migrations/db_script.sql
-); }
-
 build-database-log() {
-  # docker exec -it mssql-local  bash
-  docker exec mssql-local /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -C -d master -Q "
+  # docker exec -it mssql-dev bash
+  echo "Building Log database..."
+  docker exec mssql-dev /opt/mssql-tools18/bin/sqlcmd -S localhost -U $SQL_USERNAME -P $SQL_PASSWORD -C -d master -Q "
     if exists (select 1 from sys.databases where name = 'Log')
       drop database Log;
     go
@@ -48,17 +44,24 @@ build-database-log() {
     )"
 }
 
-start-api() { (
-  cd "$SCRIPT_DIR/$1"
-  dotnet run
-); }
+# $1 is the path to the project
+# $2 is the name of the context
+build-database() {
+  echo "Building $2 database..."
+  cd "$1"
+  # dotnet ef database update 0 --context $2c
+  rm -rf Migrations
+  dotnet ef migrations add Initial --context $2
+  dotnet build
+  dotnet ef database update --context $2
+  # dotnet ef migrations script --context $2 --idempotent --output Migrations/db_script.sql
+}
 
 ################################################## main ##################################################
 
 clear
-# dotnet tool restore
-# build-server
-docker start mssql-local
+build-server
+dotnet tool restore
+sleep 10 # wait for SQL Server to start
 build-database-log
 build-database "Identity" "IdentityContext"
-# start-api "Identity"
