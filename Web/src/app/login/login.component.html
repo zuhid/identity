@@ -1,4 +1,4 @@
 <nc-card header="Login" submit="Login" (submitClick)="login()">
-  <nc-text label="Username"></nc-text>
-  <nc-text label="Password"></nc-text>
+  <nc-text label="Username" [(ngModel)]='model.username'></nc-text>
+  <nc-text label="Password" [(ngModel)]='model.password'></nc-text>
 </nc-card>

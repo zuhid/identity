@@ -6,12 +6,15 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { IndexComponent } from './index/index.component';
 import { ControlsModule } from '../controls/controls.module';
+import { AuthenticationGuard, AuthorizationGuard } from '../guards';
 
 const routes: Routes = [
   { path: "login", component: LoginComponent },
   {
     path: "",
     component: IndexComponent,
+    canActivate: [AuthenticationGuard],
+    canActivateChild: [AuthorizationGuard],
     children: [
       { path: "admin", loadChildren: () => import("./admin/admin.module").then((m) => m.AdminModule) },
     ],
