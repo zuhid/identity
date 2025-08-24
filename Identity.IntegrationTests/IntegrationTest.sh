@@ -24,26 +24,28 @@ delete() {
 clear
 rm -rf TestResults
 mkdir TestResults
-# userId=$(uuidgen)
+userId=$(uuidgen)
 
-get 'User'
-post 'User' '{
-"id": "f08b13f0-1e24-48f7-a205-029de54eedc6",
-"updated": "2025-03-14T14:43:12.702Z",
-"updatedBy": "string",
-"isActive": true,
-"email": "test@test.com",
-"password": "P@ssw0rd",
-"phone": "333-333-3333"
-}'
-put 'User' '{
-  "id": "f08b13f0-1e24-48f7-a205-029de54eedc6",
-  "updated": "2025-03-14T16:59:05.2120027",
-  "updatedBy": "string",
-  "isActive": true,
-  "email": "test2@test.com",
-  "password": "P@ssw0rd",
-  "phone": "222-444-4444"
-}'
-get "User?Id=f08b13f0-1e24-48f7-a205-029de54eedc6"
-delete "User/Id/f08b13f0-1e24-48f7-a205-029de54eedc6"
+echo $userId
+# get 'User'
+# post 'User' '{
+#   "id": "f08b13f0-1e24-48f7-a205-029de54eedc6",
+#   "updated": "2025-03-14T14:43:12.702Z",
+#   "updatedBy": "string",
+#   "isActive": true,
+#   "email": "test@test.com",
+#   "password": "P@ssw0rd",
+#   "phone": "333-333-3333"
+# }'
+
+# put 'User' '{
+#   "id": "f08b13f0-1e24-48f7-a205-029de54eedc6",
+#   "updated": "2025-03-14T16:59:05.2120027",
+#   "updatedBy": "string",
+#   "isActive": true,
+#   "email": "test2@test.com",
+#   "password": "P@ssw0rd",
+#   "phone": "222-444-4444"
+# }'
+# get "User?Id=f08b13f0-1e24-48f7-a205-029de54eedc6"
+# delete "User/Id/f08b13f0-1e24-48f7-a205-029de54eedc6"

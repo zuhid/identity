@@ -8,7 +8,7 @@ public interface IUserMapper
     Models.User GetModel(Entities.User entity);
 }
 
-internal class UserMapper : BaseMapper<Models.User, Entities.User>, IUserMapper
+public class UserMapper : BaseMapper<Models.User, Entities.User>, IUserMapper
 {
     public override Entities.User GetEntity(Models.User model)
     {
@@ -16,10 +16,8 @@ internal class UserMapper : BaseMapper<Models.User, Entities.User>, IUserMapper
         return new Entities.User
         {
             Id = model.Id,
-            UpdatedDate = model.UpdatedDate,
-            // IsActive = model.IsActive,
+            UserName = model.Email,
             Email = model.Email,
-            PasswordHash = model.Password,
             PhoneNumber = model.Phone,
         };
     }

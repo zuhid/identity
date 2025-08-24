@@ -10,4 +10,7 @@ public class User : BaseModel
     public string Email { get; set; } = "";
     public string Password { get; set; } = "";
     public string Phone { get; set; } = "";
+    public string EmailToken { get; set; } = "";
+    public string PhoneToken { get; set; } = "";
+    public string TfaToken { get; set; } = "";
 }

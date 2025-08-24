@@ -78,6 +78,6 @@ clear
 # set_secrets
 # update_dotnet_packages
 # build_server
-# build_database Identity Identity Identity
+build_database Identity Identity Identity
 # build_database BaseApi Identity Log
 build-database-log

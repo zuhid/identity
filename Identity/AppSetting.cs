@@ -1,6 +1,6 @@
 namespace Zuhid.Identity;
 
-internal class AppSetting(IConfiguration configuration)
+public class AppSetting(IConfiguration configuration)
 {
     public string Name { get; set; } = "Identity";
     public string Version { get; set; } = "1.0";

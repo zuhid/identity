@@ -13,7 +13,7 @@ public interface IIdentityRepository
     Task<int> Delete(Guid id);
 }
 
-internal class IdentityRepository(IdentityContext context) : BaseRepository<IdentityContext, Models.User, Entities.User>(context), IIdentityRepository
+public class IdentityRepository(IdentityContext context) : BaseRepository<IdentityContext, Models.User, Entities.User>(context), IIdentityRepository
 {
     public override IQueryable<Models.User> Query => context.Users.Select(entity => new Models.User
     {

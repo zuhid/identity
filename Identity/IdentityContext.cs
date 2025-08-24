@@ -5,7 +5,7 @@ using Zuhid.Identity.Entities;
 
 namespace Zuhid.Identity;
 
-internal class IdentityContext(DbContextOptions<IdentityContext> options) : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>(options), IDbContext
+public class IdentityContext(DbContextOptions<IdentityContext> options) : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>(options), IDbContext
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {
