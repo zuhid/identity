@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Zuhid.Base;
+using Zuhid.BaseApi;
 
 namespace Zuhid.Identity.Models;
 

@@ -1,4 +1,4 @@
-using Zuhid.Base;
+using Zuhid.BaseApi;
 
 namespace Zuhid.Identity.Mappers;
 
@@ -8,7 +8,7 @@ public interface IUserMapper
     Models.User GetModel(Entities.User entity);
 }
 
-public class UserMapper : BaseMapper<Models.User, Entities.User>, IUserMapper
+internal class UserMapper : BaseMapper<Models.User, Entities.User>, IUserMapper
 {
     public override Entities.User GetEntity(Models.User model)
     {
@@ -16,11 +16,11 @@ public class UserMapper : BaseMapper<Models.User, Entities.User>, IUserMapper
         return new Entities.User
         {
             Id = model.Id,
-            Updated = model.Updated,
-            IsActive = model.IsActive,
+            UpdatedDate = model.UpdatedDate,
+            // IsActive = model.IsActive,
             Email = model.Email,
-            Password = model.Password,
-            Phone = model.Phone,
+            PasswordHash = model.Password,
+            PhoneNumber = model.Phone,
         };
     }
 }

@@ -3,16 +3,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Setup Dev Environment",
-      "group": "build",
-      "type": "shell",
-      "command": "${workspaceFolder}/.vscode/setup-dev.sh",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      }
-    },
-    {
-      "label": "Run Identity",
+      "label": "Identity",
       "type": "shell",
       "command": "dotnet run",
       "options": {
@@ -20,7 +11,7 @@
       }
     },
     {
-      "label": "Run Web",
+      "label": "Web",
       "type": "shell",
       "command": "npm start",
       "options": {
@@ -28,11 +19,11 @@
       }
     },
     {
-      "label": "Run Web and Identity",
+      "label": "Identity and Web",
       "group": "build",
       "dependsOn": [
-        "Run Identity",
-        "Run Web"
+        "Identity",
+        "Web"
       ]
     }
   ]

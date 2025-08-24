@@ -1,12 +1,17 @@
-using Zuhid.Base;
+using Microsoft.AspNetCore.Identity;
+using Zuhid.BaseApi;
 
 namespace Zuhid.Identity.Entities;
 
-public class User : BaseEntity
+public class User : IdentityUser<Guid>, IEntity
 {
-    public bool IsActive { get; set; }
-    public required string Email { get; set; }
-    public required string Password { get; set; }
-    public required string Phone { get; set; }
-}
+  public User()
+  {
+    Id = Guid.NewGuid();
+    SecurityStamp = Guid.NewGuid().ToString();
+  }
 
+  public Guid UpdatedById { get; set; } = Guid.Empty;
+
+  public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
+}

@@ -1,21 +1,26 @@
-# Editor configuration, see https://editorconfig.org
 root = true
 
+################################################## All files ##################################################
 [*]
 charset = utf-8
 indent_style = space
 indent_size = 2
-insert_final_newline = true
+insert_final_newline = false
 trim_trailing_whitespace = true
 
-[*.ts]
-quote_type = single
-ij_typescript_use_double_quotes = false
-
-[*.md]
-max_line_length = off
-
+################################################## C# files ##################################################
 [*.cs]
 indent_size = 4
 csharp_style_namespace_declarations = file_scoped:error
-dotnet_sort_system_directives_first = true
+
+######################### .NET Coding Conventions #########################
+# Organize usings
+file_header_template = unset
+dotnet_separate_import_directive_groups = false
+dotnet_sort_system_directives_first = false
+dotnet_remove_unnecessary_imports = true
+
+######################### Custom #########################
+
+[*.cs]
+dotnet_diagnostic.CA1515.severity = none

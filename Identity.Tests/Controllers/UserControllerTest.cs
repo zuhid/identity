@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Zuhid.Identity.Controllers;
 using Zuhid.Identity.Mappers;
 using Zuhid.Identity.Models;
+using Zuhid.Identity;
 
 namespace Zuhid.Identity.Tests.Controllers;
 
@@ -34,7 +35,7 @@ public class UserControllerTest
         var saveResponse = await userController.Add(new User
         {
             Id = new Guid("f08b13f0-1e24-48f7-a205-029de54eedc6"),
-            Updated = new DateTime(2025, 03, 14),
+            UpdatedDate = new DateTime(2025, 03, 14),
             UpdatedBy = "Administrator",
             IsActive = true,
             Email = "test@test.com",
@@ -52,7 +53,7 @@ public class UserControllerTest
         saveResponse = await userController.Update(new User
         {
             Id = new Guid("f08b13f0-1e24-48f7-a205-029de54eedc6"),
-            Updated = saveResponse.Updated,
+            UpdatedDate = saveResponse.Updated,
             UpdatedBy = "Administrator",
             IsActive = true,
             Email = "test@test.com",

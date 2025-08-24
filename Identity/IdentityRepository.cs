@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Zuhid.Base;
+using Zuhid.BaseApi;
 
 namespace Zuhid.Identity;
 
@@ -13,17 +13,17 @@ public interface IIdentityRepository
     Task<int> Delete(Guid id);
 }
 
-public class IdentityRepository(IdentityContext context) : BaseRepository<IdentityContext, Models.User, Entities.User>(context), IIdentityRepository
+internal class IdentityRepository(IdentityContext context) : BaseRepository<IdentityContext, Models.User, Entities.User>(context), IIdentityRepository
 {
-    public override IQueryable<Models.User> Query => context.User.Select(entity => new Models.User
+    public override IQueryable<Models.User> Query => context.Users.Select(entity => new Models.User
     {
         Id = entity.Id,
         UpdatedById = entity.UpdatedById,
         UpdatedBy = entity.UpdatedById.ToString(),
-        Updated = entity.Updated,
-        Email = entity.Email,
-        Password = entity.Password,
-        Phone = entity.Phone,
+        UpdatedDate = entity.UpdatedDate,
+        Email = entity.Email!,
+        Password = entity.PasswordHash ?? string.Empty,
+        Phone = entity.PhoneNumber ?? string.Empty,
     });
 
     public async Task<List<Models.User>> Get() => await Query.ToListAsync().ConfigureAwait(false);
