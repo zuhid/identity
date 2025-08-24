@@ -1,9 +1,8 @@
 ﻿using OtpNet;
-using System;
 
-class Program
+class TotpServer
 {
-  static void Main()
+  public static void Run()
   {
     // Your base32 secret key
     string secretKey = "C2OMCUHLEPOBTRTGFSOJASVGTWRDJ4LO";
