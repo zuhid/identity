@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Login } from '../../models';
+import { IdentityService } from '../../services';
 
 @Component({
   selector: 'nc-login',
@@ -10,13 +11,13 @@ import { Login } from '../../models';
 })
 export class LoginComponent {
   public model: Login = {
-    username: 'testuser',
+    username: 'admin@company.com',
     password: 'P@ssw0rd'
   };
 
-  constructor(private router: Router) { }
+  constructor(private identityService: IdentityService, private router: Router) { }
 
   async login() {
-    this.router.navigate(["admin/user"]);
+    this.identityService.login(this.model).then(() => this.router.navigate(["/admin/user"]));
   }
 }

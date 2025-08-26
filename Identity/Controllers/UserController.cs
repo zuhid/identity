@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Zuhid.BaseApi;
 using Zuhid.Identity.Mappers;
 using Zuhid.Identity.Models;
@@ -10,8 +12,32 @@ namespace Zuhid.Identity.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class UserController(UserRepository userRepository, IIdentityRepository identityRepository, IUserMapper userMapper,
-UserManager<Entities.User> userManager) : ControllerBase
+UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManager, ITokenService tokenService) : ControllerBase
 {
+    [AllowAnonymous]
+    [HttpPost("Login")]
+    public async Task<LoginResponse> Login(Login login)
+    {
+        var loginResponse = new LoginResponse();
+        ArgumentNullException.ThrowIfNull(login);
+        var signInResult = await signInManager.PasswordSignInAsync(login.UserName, login.Password, true, false).ConfigureAwait(false);
+        if (signInResult.Succeeded)
+        {
+            var userEntity = await userManager.FindByNameAsync(login.UserName).ConfigureAwait(false);
+            if (userEntity != null)
+            {
+                loginResponse.Token = tokenService.Build(userEntity.Id,
+                [
+                    new("userName", userEntity.UserName ?? ""),
+                    new("email", userEntity.Email ?? ""),
+                    new("phoneNumber", userEntity.PhoneNumber ?? ""),
+                ], []);
+            }
+        }
+        return loginResponse;
+    }
+
+
     [HttpGet()]
     public async Task<List<User>> Get(Guid? id)
     {

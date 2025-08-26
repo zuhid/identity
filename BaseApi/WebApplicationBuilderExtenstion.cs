@@ -4,13 +4,24 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Zuhid.BaseApi;
 
-public class BaseWebApplication(string[] args, string title, string version, string corsOrigin)
+public class BaseWebApplication(string[] args, string title, string version, string corsOrigin, IdentityModel identityModel)
 {
     public WebApplicationBuilder Builder { get; private set; } = WebApplication.CreateBuilder(args);
 
     public BaseWebApplication AddServices()
     {
         var services = Builder.Services;
+        services.AddCors(options => options.AddPolicy(corsOrigin, policy => policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+        ));
+
+        services
+            .AddAuthentication()
+            .AddJwtBearer("Bearer", option => new JwtTokenService(identityModel).Configure(option));
+
+
         services.AddControllers().AddMvcOptions(options =>
         {
             // options.Filters.Add(new AuthorizeFilter());
@@ -19,6 +30,8 @@ public class BaseWebApplication(string[] args, string title, string version, str
             options.Filters.Add<ExceptionFilter>();
         });
         services.AddSwaggerGen(AddSwagger);
+        services.AddScoped<ITokenService>(option => new JwtTokenService(identityModel)); // Add identity service
+
         return this;
     }
 

@@ -1,12 +1,15 @@
 <div id="{{ cardId() }}" class="card">
-  <div class="card-header">
+  <div *ngIf="header" class="card-header">
     <span>{{ header }}</span>
-    <a class="card-help" (click)="helpClick.emit()">?</a>
+    <a class="card-help" *ngIf="helpClick.observed" (click)="helpClick.emit()">?</a>
   </div>
   <div class="card-body">
     <form>
       <ng-content></ng-content>
-      <nc-button *ngIf="submit" id="submit" [text]="submit" (click)="submitClick.emit()"></nc-button>
+      <div *ngIf="displayFooter()">
+        <nc-button *ngIf="saveClick.observers.length>0" id="save" [text]="saveText"
+          (click)="saveClick.emit()"></nc-button>
+      </div>
     </form>
   </div>
 </div>

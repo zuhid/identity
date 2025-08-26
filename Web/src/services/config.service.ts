@@ -9,6 +9,7 @@ export class ConfigService {
   }
 
   public get identity() {
-    return this._config.identity;
+    return "http://localhost:5215";
+    // return this._config.identity;
   }
 }

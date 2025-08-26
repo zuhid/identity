@@ -4,10 +4,11 @@
   "editor.tabSize": 2,
   "files.insertFinalNewline": true,
   "files.exclude": {
+    "**/.angular": true,
     "**/.git": true,
     "**/bin": true,
-    "**/.angular": true,
     "**/node_modules": true,
-    "**/obj": true
-  }
+    "**/obj": true,
+    "**/package-lock.json": true,
+  },
 }

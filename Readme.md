@@ -8,7 +8,11 @@
 dotnet tool restore # restore tools
 ```
 
-
+# Generate RSA public/private key
+```sh
+openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048 # Generate a Private Key
+openssl rsa -pubout -in private_key.pem -out public_key.pem # Extract the Public Key
+```
 
 # Generate a new Angular application
 

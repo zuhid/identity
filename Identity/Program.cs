@@ -10,7 +10,12 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var app = new BaseWebApplication(args, "Zuhid.Identity", "1.0", "CorsOrigins");
+        var app = new BaseWebApplication(args, "Zuhid.Identity", "1.0", "CorsOrigins", new IdentityModel
+        {
+            Audience = "https://localhost:4200",
+            Issuer = "https://localhost:5215",
+            SymmetricKey = "EQszUJwDn48B3dDFQxx7NyGMR5XL4mxSBbtx2D3B8jbRHxwnYzsunQqPCJvzKhnZYw4GMWYaGYfAWgtN2upSePG6F6TAdY9pYTy9y43WfxxJaShASJDTT5FWYXWAnnEx"
+        });
         var appSetting = new AppSetting(app.Builder.Configuration);
         app.AddServices();
         app.AddDatabase<IdentityContext, IdentityContext>(appSetting.Identity);
@@ -33,7 +38,6 @@ public class Program
 
         app.Builder.Services.AddTransient<IIdentityRepository, IdentityRepository>();
         app.Builder.Services.AddTransient<UserRepository, UserRepository>();
-
         app.Builder.Services.AddTransient<IUserMapper, UserMapper>();
         app.Build().Run();
 

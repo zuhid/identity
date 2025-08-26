@@ -8,9 +8,10 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 })
 export class CardComponent {
   @Input() header = "";
-  @Input() help = false;
-  @Input() submit!: string;
+  @Input() saveText: string = "Save";
   @Output() helpClick = new EventEmitter();
-  @Output() submitClick = new EventEmitter();
+  @Output() saveClick = new EventEmitter();
   cardId = () => "card-" + this.header.replace(" ", "");
+
+  displayFooter = () => this.saveClick.observed;
 }

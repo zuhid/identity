@@ -25,7 +25,6 @@ export class TokenService {
   }
 
   private init(value: any) {
-    // this._header = JSON.parse(window.atob(value.split(".")[0]));
     this._payload = JSON.parse(window.atob(value.split(".")[1]));
     this._signature = value.split(".")[2];
   }

@@ -9,7 +9,7 @@ export class IdentityService {
   constructor(private apiService: ApiService, private tokenService: TokenService, private configService: ConfigService) { }
 
   async login(model: Login): Promise<void> {
-    let loginResponse: LoginResponse = await this.apiService.post(`${this.configService.identity}/login`, model);
-    this.tokenService.setIdentityToken(loginResponse?.identityToken);
+    let loginResponse: LoginResponse = await this.apiService.post(`${this.configService.identity}/user/login`, model);
+    this.tokenService.setIdentityToken(loginResponse?.token);
   }
 }

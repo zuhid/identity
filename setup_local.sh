@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ################################################## variables ##################################################
+UseDocker=false
 postgres_image="postgres:17"
 postgres_container="postgres_container"
 postgres_user="postgres"
@@ -40,37 +41,74 @@ build_server(){
 
 build_database(){
   dbname=${3,,} # get the database in lower case
-  docker start $postgres_container # start the container
-  rm -rf $1/Migrations # remove migration folder
-  dotnet ef migrations add initial --project $1 --startup-project $2 --context "$3Context" # create migration
-  dotnet ef migrations script --project $1 --startup-project $2 --context "$3Context" --output $1/Migrations/script.sql # create script for review
-  docker exec $postgres_container bash -c "dropdb --username=$postgres_user --if-exists --force $dbname" # drop database
-  docker exec $postgres_container bash -c "createdb --username=$postgres_user $dbname" # create database
-  ##### create __EFMigrationsHistory table
-  docker exec -it $postgres_container psql -U $postgres_user -d $dbname -c '
-  create table "__EFMigrationsHistory" (
-    "MigrationId" character varying(150) not null,
-    "ProductVersion" character varying(32) not null,
-    constraint "PK___EFMigrationsHistory" primary key ("MigrationId")
-  );'
-  dotnet ef database update --project $1 --startup-project $2 --context "$3Context" # apply migrations
+  if [ "$UseDocker" == "true" ]; then
+    docker start $postgres_container # start the container
+    rm -rf $1/Migrations # remove migration folder
+    dotnet ef migrations add initial --project $1 --startup-project $2 --context "$3Context" # create migration
+    dotnet ef migrations script --project $1 --startup-project $2 --context "$3Context" --output $1/Migrations/script.sql # create script for review
+    docker exec $postgres_container bash -c "dropdb --username=$postgres_user --if-exists --force $dbname" # drop database
+    docker exec $postgres_container bash -c "createdb --username=$postgres_user $dbname" # create database
+    ##### create __EFMigrationsHistory table
+    docker exec -it $postgres_container psql -U $postgres_user -d $dbname -c '
+    create table "__EFMigrationsHistory" (
+      "MigrationId" character varying(150) not null,
+      "ProductVersion" character varying(32) not null,
+      constraint "PK___EFMigrationsHistory" primary key ("MigrationId")
+    );'
+    dotnet ef database update --project $1 --startup-project $2 --context "$3Context" # apply migrations
+  else
+    export PGPASSWORD=$postgres_password
+    rm -rf $1/Migrations # remove migration folder
+    dotnet ef migrations add initial --project $1 --startup-project $2 --context "$3Context" # create migration
+    dotnet ef migrations script --project $1 --startup-project $2 --context "$3Context" --output $1/Migrations/script.sql # create script for review
+    dropdb --username=$postgres_user --if-exists --force $dbname # drop database
+    createdb --username=$postgres_user $dbname # create database
+    ##### create __EFMigrationsHistory table
+    psql -U $postgres_user -d $dbname -c '
+    create table "__EFMigrationsHistory" (
+      "MigrationId" character varying(150) not null,
+      "ProductVersion" character varying(32) not null,
+      constraint "PK___EFMigrationsHistory" primary key ("MigrationId")
+    );'
+    dotnet ef database update --project $1 --startup-project $2 --context "$3Context" # apply migrations
+    unset PGPASSWORD
+   fi
 }
 
 build-database-log() {
-  docker exec $postgres_container bash -c "dropdb --username=$postgres_user --if-exists --force log" # drop database
-  docker exec $postgres_container bash -c "createdb --username=$postgres_user log" # create database
-  docker exec -it $postgres_container psql -U $postgres_user -d log -c '
-  create table log (
-      id uuid not null,
-      updated timestamp with time zone not null,
-      log_level text not null,
-      category text not null,
-      event_id text not null,
-      event_name text not null,
-      state text not null,
-      exception text not null,
-      constraint pk_log primary key (id)
-  );'
+  if [ "$UseDocker" == "true" ]; then
+    docker exec $postgres_container bash -c "dropdb --username=$postgres_user --if-exists --force log" # drop database
+    docker exec $postgres_container bash -c "createdb --username=$postgres_user log" # create database
+    docker exec -it $postgres_container psql -U $postgres_user -d log -c '
+    create table log (
+        id uuid not null,
+        updated timestamp with time zone not null,
+        log_level text not null,
+        category text not null,
+        event_id text not null,
+        event_name text not null,
+        state text not null,
+        exception text not null,
+        constraint pk_log primary key (id)
+    );'
+  else
+    export PGPASSWORD=$postgres_password
+    dropdb --username=$postgres_user --if-exists --force log # drop database
+    createdb --username=$postgres_user log
+    psql -U $postgres_user -d log -c '
+    create table log (
+        id uuid not null,
+        updated timestamp with time zone not null,
+        log_level text not null,
+        category text not null,
+        event_id text not null,
+        event_name text not null,
+        state text not null,
+        exception text not null,
+        constraint pk_log primary key (id)
+    );'
+    unset PGPASSWORD
+  fi
 }
 
 ################################################## execute ##################################################
@@ -80,4 +118,4 @@ clear
 # build_server
 build_database Identity Identity Identity
 # build_database BaseApi Identity Log
-build-database-log
+# build-database-log
