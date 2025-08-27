@@ -31,7 +31,7 @@ public class BaseWebApplication(string[] args, string title, string version, str
         });
         services.AddSwaggerGen(AddSwagger);
         services.AddScoped<ITokenService>(option => new JwtTokenService(identityModel)); // Add identity service
-
+        services.AddScoped<IMessageService, MessageService>(); // Add messageservice
         return this;
     }
 

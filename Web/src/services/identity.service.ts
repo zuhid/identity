@@ -10,6 +10,12 @@ export class IdentityService {
 
   async login(model: Login): Promise<void> {
     let loginResponse: LoginResponse = await this.apiService.post(`${this.configService.identity}/user/login`, model);
-    this.tokenService.setIdentityToken(loginResponse?.token);
+    this.tokenService.setAuthToken(loginResponse?.authToken);
+  }
+  async smsToken(model: Login) {
+    await this.apiService.put(`${this.configService.identity}/user/smsToken`, model);
+  }
+  async emailToken(model: Login) {
+    await this.apiService.put(`${this.configService.identity}/user/emailToken`, model);
   }
 }

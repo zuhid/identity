@@ -8,19 +8,19 @@ export class TokenService {
   private _signature: any = {};
 
   constructor() {
-    let value = sessionStorage.getItem("identityToken");
+    let value = sessionStorage.getItem("authToken");
     if (value) {
       this.init(JSON.parse(value));
     }
   }
 
-  getIdentityToken(): any {
-    let value = sessionStorage.getItem("identityToken");
+  getAuthToken(): any {
+    let value = sessionStorage.getItem("authToken");
     return value ? JSON.parse(value) : null;
   }
 
-  setIdentityToken(value: any) {
-    sessionStorage.setItem("identityToken", JSON.stringify(value));
+  setAuthToken(value: any) {
+    sessionStorage.setItem("authToken", JSON.stringify(value));
     this.init(value);
   }
 

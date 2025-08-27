@@ -11,13 +11,21 @@ import { IdentityService } from '../../services';
 })
 export class LoginComponent {
   public model: Login = {
-    username: 'admin@company.com',
-    password: 'P@ssw0rd'
+    email: 'admin@company.com',
+    password: 'P@ssw0rd',
+    tfaToken: ''
   };
 
   constructor(private identityService: IdentityService, private router: Router) { }
 
   async login() {
     this.identityService.login(this.model).then(() => this.router.navigate(["/admin/user"]));
+  }
+
+  async smsToken() {
+    this.identityService.smsToken(this.model);
+  }
+  async emailToken() {
+    this.identityService.emailToken(this.model);
   }
 }

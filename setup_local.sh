@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################## variables ##################################################
-UseDocker=false
+UseDocker=true
 postgres_image="postgres:17"
 postgres_container="postgres_container"
 postgres_user="postgres"

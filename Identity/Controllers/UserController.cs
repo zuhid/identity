@@ -12,21 +12,21 @@ namespace Zuhid.Identity.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class UserController(UserRepository userRepository, IIdentityRepository identityRepository, IUserMapper userMapper,
-UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManager, ITokenService tokenService) : ControllerBase
+UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManager, ITokenService tokenService, IMessageService messageService) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("Login")]
-    public async Task<LoginResponse> Login(Login login)
+    public async Task<LoginResponse> Login(User user)
     {
         var loginResponse = new LoginResponse();
-        ArgumentNullException.ThrowIfNull(login);
-        var signInResult = await signInManager.PasswordSignInAsync(login.UserName, login.Password, true, false).ConfigureAwait(false);
+        ArgumentNullException.ThrowIfNull(user);
+        var signInResult = await signInManager.PasswordSignInAsync(user.Email, user.Password, true, false).ConfigureAwait(false);
         if (signInResult.Succeeded)
         {
-            var userEntity = await userManager.FindByNameAsync(login.UserName).ConfigureAwait(false);
+            var userEntity = await userManager.FindByNameAsync(user.Email).ConfigureAwait(false);
             if (userEntity != null)
             {
-                loginResponse.Token = tokenService.Build(userEntity.Id,
+                loginResponse.AuthToken = tokenService.Build(userEntity.Id,
                 [
                     new("userName", userEntity.UserName ?? ""),
                     new("email", userEntity.Email ?? ""),
@@ -36,6 +36,39 @@ UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManag
         }
         return loginResponse;
     }
+
+    [HttpPut("SmsToken")]
+    public async Task<bool> SmsToken(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+        if (userEntity == null || string.IsNullOrWhiteSpace(userEntity.PhoneNumber)) return false;
+        var result = await userManager.GenerateTwoFactorTokenAsync(userEntity, TokenOptions.DefaultPhoneProvider).ConfigureAwait(false);
+        await messageService.SendSms(userEntity.PhoneNumber ?? "", $"Your verification code is {result}").ConfigureAwait(false);
+        return true;
+    }
+
+    [HttpPut("EmailToken")]
+    public async Task<bool> EmailToken(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+        if (userEntity == null || string.IsNullOrWhiteSpace(userEntity.PhoneNumber)) return false;
+        var result = await userManager.GenerateTwoFactorTokenAsync(userEntity, TokenOptions.DefaultEmailProvider).ConfigureAwait(false);
+        await messageService.SendEmail("Your verification code", $"Your verification code is {result}", userEntity.Email ?? "").ConfigureAwait(false);
+        return true;
+    }
+
+    [HttpPut("IsEmailTokenValid")]
+    public async Task<bool> IsEmailTokenValid(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+        if (userEntity == null) return false;
+        var result = await userManager.VerifyTwoFactorTokenAsync(userEntity, TokenOptions.DefaultEmailProvider, user.EmailToken).ConfigureAwait(false);
+        return result;
+    }
+
 
 
     [HttpGet()]
@@ -53,33 +86,33 @@ UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManag
         return await userManager.CheckPasswordAsync(userEntity, user.Password).ConfigureAwait(false);
     }
 
-    [HttpGet("EmailToken")]
-    public async Task<string> EmailToken(User user)
-    {
-        ArgumentNullException.ThrowIfNull(user);
-        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
-        if (userEntity == null) return string.Empty;
-        return await userManager.GenerateEmailConfirmationTokenAsync(userEntity).ConfigureAwait(false);
-    }
+    // [HttpGet("EmailToken")]
+    // public async Task<string> EmailTokenGet(User user)
+    // {
+    //     ArgumentNullException.ThrowIfNull(user);
+    //     var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+    //     if (userEntity == null) return string.Empty;
+    //     return await userManager.GenerateEmailConfirmationTokenAsync(userEntity).ConfigureAwait(false);
+    // }
 
-    [HttpGet("IsEmailTokenValid")]
-    public async Task<bool> IsEmailTokenValid(User user)
-    {
-        ArgumentNullException.ThrowIfNull(user);
-        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
-        if (userEntity == null) return false;
-        var result = await userManager.ConfirmEmailAsync(userEntity, user.EmailToken).ConfigureAwait(false);
-        return result.Succeeded;
-    }
+    // [HttpGet("IsEmailTokenValid")]
+    // public async Task<bool> IsEmailTokenValid(User user)
+    // {
+    //     ArgumentNullException.ThrowIfNull(user);
+    //     var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+    //     if (userEntity == null) return false;
+    //     var result = await userManager.ConfirmEmailAsync(userEntity, user.EmailToken).ConfigureAwait(false);
+    //     return result.Succeeded;
+    // }
 
-    [HttpGet("PhoneToken")]
-    public async Task<string> PhoneToken(User user)
-    {
-        ArgumentNullException.ThrowIfNull(user);
-        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
-        if (userEntity == null || string.IsNullOrWhiteSpace(userEntity.PhoneNumber)) return string.Empty;
-        return await userManager.GenerateChangePhoneNumberTokenAsync(userEntity, userEntity.PhoneNumber).ConfigureAwait(false);
-    }
+    // [HttpGet("PhoneToken")]
+    // public async Task<string> PhoneToken(User user)
+    // {
+    //     ArgumentNullException.ThrowIfNull(user);
+    //     var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+    //     if (userEntity == null || string.IsNullOrWhiteSpace(userEntity.PhoneNumber)) return string.Empty;
+    //     return await userManager.GenerateChangePhoneNumberTokenAsync(userEntity, userEntity.PhoneNumber).ConfigureAwait(false);
+    // }
 
     [HttpGet("IsPhoneTokenValid")]
     public async Task<bool> IsPhoneTokenValid(User user)
@@ -133,7 +166,6 @@ UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManag
     {
         return await identityRepository.Update(userMapper.GetEntity(user)).ConfigureAwait(false);
     }
-
 
     [HttpDelete("Id/{id}")]
     public async Task Delete(Guid id)

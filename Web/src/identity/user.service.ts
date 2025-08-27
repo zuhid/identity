@@ -14,6 +14,6 @@ export class UserService {
 
   async login(model: Login) {
     let loginResponse: LoginResponse = await this.apiService.post(`${this.configService.identity}/login`, model);
-    this.tokenService.setIdentityToken(loginResponse?.token);
+    this.tokenService.setAuthToken(loginResponse?.authToken);
   }
 }

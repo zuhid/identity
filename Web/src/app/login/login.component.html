@@ -1,4 +1,10 @@
 <nc-card header="Login" saveText="Login" (saveClick)="login()">
-  <nc-text label="Username" [(ngModel)]='model.username'></nc-text>
-  <nc-text label="Password" [(ngModel)]='model.password'></nc-text>
+  <nc-text label="Email" [(ngModel)]='model.email'></nc-text>
+  <nc-password label="Password" [(ngModel)]='model.password'></nc-password>
+  <nc-text label="TFA Token" [(ngModel)]='model.tfaToken'></nc-text>
+
+  <ng-container nc-card-footer>
+    <nc-button text="Sms Token" (click)="smsToken()"></nc-button>
+    <nc-button text="Email Token" (click)="emailToken()"></nc-button>
+  </ng-container>
 </nc-card>

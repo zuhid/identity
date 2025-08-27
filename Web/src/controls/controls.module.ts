@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 
 // Custom Controls
 import { TextComponent } from './text/text.component';
+import { PasswordComponent } from './password/password.component';
 import { CardComponent } from './card/card.component';
 import { ButtonComponent } from './button/button.component';
 
 @NgModule({
   declarations: [
     TextComponent,
+    PasswordComponent,
     CardComponent,
     ButtonComponent
   ],
@@ -19,6 +21,7 @@ import { ButtonComponent } from './button/button.component';
   ],
   exports: [
     TextComponent,
+    PasswordComponent,
     CardComponent,
     ButtonComponent
   ],

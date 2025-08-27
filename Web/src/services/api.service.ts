@@ -16,11 +16,13 @@ export class ApiService {
    * @param errorMessage : if the url fails, a custom message to display
    * @returns json object if succesful, otherwise null
    */
-  getJson = (url: string, interval?: number, errorMessage?: string) =>
-    this.get("application/json", url, interval, errorMessage).pipe((res) => res, shareReplay());
+  getJson = (url: string, interval?: number, errorMessage?: string) => {
+    return this.get("application/json", url, interval, errorMessage).pipe((res) => res, shareReplay());
+  };
 
-  getCsv = (url: string, interval?: number, errorMessage?: string) =>
-    this.get("text/csv", url, interval, errorMessage).pipe((res) => res, shareReplay());
+  getCsv = (url: string, interval?: number, errorMessage?: string) => {
+    return this.get("text/csv", url, interval, errorMessage).pipe((res) => res, shareReplay());
+  };
 
   getAsset = async (url: string): Promise<any> => {
     // return this.fetchApi("get", `${environment.webBaseUrl}/assets/${url}`, "");
@@ -34,8 +36,9 @@ export class ApiService {
    * @param model : the object to add
    * @returns json object if succesful, otherwise null
    */
-  post = async (url: string, model: any, errorMessage?: string): Promise<any> =>
-    await this.fetchApi("post", url, "application/json", errorMessage, model);
+  post = async (url: string, model: any, errorMessage?: string): Promise<any> => {
+    return await this.fetchApi("post", url, "application/json", errorMessage, model);
+  };
 
   /**
    * @param url : The url to call
@@ -43,15 +46,18 @@ export class ApiService {
    * @param model : the object to update
    * @returns json object if succesful, otherwise null
    */
-  put = async (url: string, model: any, errorMessage?: string): Promise<any> =>
-    await this.fetchApi("put", url, "application/json", errorMessage, model);
+  put = async (url: string, model: any, errorMessage?: string): Promise<any> => {
+    return await this.fetchApi("put", url, "application/json", errorMessage, model);
+  };
 
   /**
    * @param url : The url to call
    * @param errorMessage : if the url fails, a custom message to display
    * @returns json object if succesful, otherwise null
    */
-  delete = async (url: string, errorMessage?: string): Promise<any> => await this.fetchApi("delete", url, "application/json", errorMessage, null);
+  delete = async (url: string, errorMessage?: string): Promise<any> => {
+    return await this.fetchApi("delete", url, "application/json", errorMessage, null);
+  };
 
   private get(contentType: string, url: string, interval?: number, errorMessage?: string): Observable<any> {
     return new Observable<any>((subscriber) => {
@@ -78,12 +84,12 @@ export class ApiService {
   }
 
   private async fetchApi(method: string, url: string, contentType: string, errorMessage?: string, model?: any): Promise<any> {
-    let identityToken = await this.tokenService.getIdentityToken();
+    let authToken = await this.tokenService.getAuthToken();
     return fetch(url, {
       method: method,
       headers: {
         "Content-Type": contentType,
-        Authorization: `Bearer ${identityToken}`,
+        Authorization: `Bearer ${authToken}`,
       },
       body: model ? JSON.stringify(model) : null,
     })

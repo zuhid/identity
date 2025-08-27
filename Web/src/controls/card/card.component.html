@@ -6,10 +6,13 @@
   <div class="card-body">
     <form>
       <ng-content></ng-content>
-      <div *ngIf="displayFooter()">
-        <nc-button *ngIf="saveClick.observers.length>0" id="save" [text]="saveText"
-          (click)="saveClick.emit()"></nc-button>
-      </div>
+      <ng-container>
+        <div class="card-foot">
+          <ng-content select="[nc-card-footer]"></ng-content>
+          <nc-button *ngIf="saveClick.observers.length>0" id="save" [text]="saveText"
+            (click)="saveClick.emit()"></nc-button>
+        </div>
+      </ng-container>
     </form>
   </div>
 </div>
