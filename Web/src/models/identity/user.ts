@@ -1,6 +1,5 @@
-export interface Login {
+export interface User {
   email?: string;
   password?: string;
   phone?: string;
-  tfaToken?: string,
 }

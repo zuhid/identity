@@ -95,7 +95,7 @@ export class ApiService {
     })
       .then(async (response) => {
         if (!response || !response.ok) {
-          throw response; // let catch handle not 'ok' response
+          throw await response.json(); // let catch handle not 'ok' response
         }
         switch (contentType) {
           case "application/json":
@@ -111,8 +111,11 @@ export class ApiService {
             return response.text().then((m) => m);
         }
       })
-      .catch(() => {
-        this.toastService.error(errorMessage ? errorMessage : `Failed to ${method} ${url}`);
+      .catch((error) => {
+        Object.keys(error).forEach(key => {
+          this.toastService.error(`${key} : ${error[key]}`);
+        });
+        // this.toastService.error(error ? error : `Failed to ${method} ${url}`);
         return null;
       });
   }

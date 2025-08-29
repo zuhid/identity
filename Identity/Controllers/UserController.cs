@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Zuhid.BaseApi;
 using Zuhid.Identity.Mappers;
@@ -151,14 +153,12 @@ UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManag
     }
 
     [HttpPost]
-    public async Task<SaveRespose> Add(User user)
+    public async Task<SaveRespose> Add([NotNull] User user)
     {
-        ArgumentNullException.ThrowIfNull(user);
-        var userEntity = userMapper.GetEntity(user);
-        userEntity.PasswordHash = userManager.PasswordHasher.HashPassword(userEntity, user.Password);
-        userEntity.UpdatedDate = DateTime.UtcNow;
-        await userManager.CreateAsync(userEntity).ConfigureAwait(false);
-        return new SaveRespose { Updated = userEntity.UpdatedDate };
+        var userEntity = userMapper.GetEntity(user); // create the entity
+        var result = await userManager.CreateAsync(userEntity, user.Password).ConfigureAwait(false); // create the user
+        foreach (var error in result.Errors) ModelState.AddModelError(error.Code, error.Description); // Add any errors to ModelState
+        return new SaveRespose { Updated = userEntity.UpdatedDate }; // return the reponse
     }
 
     [HttpPut]

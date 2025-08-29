@@ -1,0 +1,16 @@
+:host {
+  position: absolute;
+  z-index: 100;
+  top: 70px;
+  right: 10px;
+
+  >div {
+    display: flex;
+    flex-direction: row;
+
+    >span {
+      flex-grow: 1;
+      padding-right: 50px;
+    }
+  }
+}
