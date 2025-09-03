@@ -13,13 +13,18 @@ export class CreateAccountComponent {
   public model: User = {
     email: 'admin@company.com',
     password: 'P@ssw0rd',
-    phone: "789-456-1230",
+    emailToken: ""
   };
 
   constructor(private identityService: IdentityService, private router: Router) { }
 
-  submit() {
-    // this.identityService.login(this.model).then(() => this.router.navigate(["/admin/user"]));
-    this.identityService.createAccount(this.model).then(() => this.router.navigate(["/admin/user"]));
+  createAccount() {
+    // this.identityService.createAccount(this.model).then(() => this.router.navigate(["/identity/verify-email"]));
+    this.identityService.createAccount(this.model);
+  }
+
+  async verifyEmail() {
+    var result = await this.identityService.verifyEmail(this.model);
+    alert(result);
   }
 }

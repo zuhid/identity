@@ -1,6 +1,6 @@
 # Prerequisites
 - docker
-- .net 8 
+- .net 9
 - angular 
 
 # Setup local environment

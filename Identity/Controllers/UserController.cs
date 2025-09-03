@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+using System.Text;
 using Zuhid.BaseApi;
 using Zuhid.Identity.Mappers;
 using Zuhid.Identity.Models;
@@ -59,16 +61,6 @@ UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManag
         var result = await userManager.GenerateTwoFactorTokenAsync(userEntity, TokenOptions.DefaultEmailProvider).ConfigureAwait(false);
         await messageService.SendEmail("Your verification code", $"Your verification code is {result}", userEntity.Email ?? "").ConfigureAwait(false);
         return true;
-    }
-
-    [HttpPut("IsEmailTokenValid")]
-    public async Task<bool> IsEmailTokenValid(User user)
-    {
-        ArgumentNullException.ThrowIfNull(user);
-        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
-        if (userEntity == null) return false;
-        var result = await userManager.VerifyTwoFactorTokenAsync(userEntity, TokenOptions.DefaultEmailProvider, user.EmailToken).ConfigureAwait(false);
-        return result;
     }
 
 
@@ -155,11 +147,85 @@ UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManag
     [HttpPost]
     public async Task<SaveRespose> Add([NotNull] User user)
     {
-        var userEntity = userMapper.GetEntity(user); // create the entity
+        var userEntity = userMapper.GetEntity(user);
+        // create the entity
         var result = await userManager.CreateAsync(userEntity, user.Password).ConfigureAwait(false); // create the user
         foreach (var error in result.Errors) ModelState.AddModelError(error.Code, error.Description); // Add any errors to ModelState
+        if (result.Errors.ToArray().Length == 0)
+        {
+            // Email token
+            var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(userEntity).ConfigureAwait(false);
+            string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
+            await messageService.SendEmail("Your verification code", $"<a href='http://localhost:4200/identity/verify-email?email={userEntity.Email}&emailToken={encodedToken}'>Click to veirfy your Email</a>", userEntity.Email ?? "").ConfigureAwait(false);
+        }
+
+        // return response
         return new SaveRespose { Updated = userEntity.UpdatedDate }; // return the reponse
     }
+
+
+    [HttpPut("VerifyEmail")]
+    public async Task<bool> VerifyEmail(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+        if (userEntity == null) return false;
+        var emailToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(user.EmailToken));
+
+        var result = await userManager.ConfirmEmailAsync(userEntity, emailToken).ConfigureAwait(false);
+        return result.Succeeded;
+    }
+
+    [HttpPut("CreatePhone")]
+    public async Task<bool> CreatePhone(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+        if (userEntity == null) return false;
+        var identityResult = await userManager.SetPhoneNumberAsync(userEntity, user.Phone).ConfigureAwait(false);
+        if (identityResult.Succeeded)
+        {
+            var result = await userManager.GenerateChangePhoneNumberTokenAsync(userEntity, user.Phone).ConfigureAwait(false);
+            return await messageService.SendSms(userEntity.PhoneNumber ?? "", $"Your phone verification token is {result}").ConfigureAwait(false);
+        }
+        return false;
+    }
+
+
+    [HttpPut("VerifyPhone")]
+    public async Task<bool> VerifyPhone(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+        if (userEntity == null) return false;
+        var identityResult = await userManager.ChangePhoneNumberAsync(userEntity, user.Phone, user.PhoneToken).ConfigureAwait(false);
+        return identityResult.Succeeded;
+    }
+
+    // [HttpPut("SendPhoneToken")]
+    // public async Task<bool> SendPhoneToken(User user)
+    // {
+    //     ArgumentNullException.ThrowIfNull(user);
+    //     var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+    //     if (userEntity == null || string.IsNullOrWhiteSpace(userEntity.PhoneNumber) && userEntity.PhoneNumberConfirmed) return false;
+    //     var result = await userManager.GenerateTwoFactorTokenAsync(userEntity, TokenOptions.DefaultPhoneProvider).ConfigureAwait(false);
+    //     await messageService.SendSms(userEntity.PhoneNumber ?? "", $"Your verification code is {result}").ConfigureAwait(false);
+    //     return true;
+    // }
+
+
+
+
+    // [HttpPut("VerifyEmailOld")]
+    // public async Task<bool> VerifyEmailOld(User user)
+    // {
+    //     ArgumentNullException.ThrowIfNull(user);
+    //     var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+    //     if (userEntity == null) return false;
+    //     var result = await userManager.VerifyTwoFactorTokenAsync(userEntity, TokenOptions.DefaultEmailProvider, user.EmailToken).ConfigureAwait(false);
+    //     return result;
+    // }
+
 
     [HttpPut]
     public async Task<SaveRespose> Update(User user)

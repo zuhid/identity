@@ -8,9 +8,19 @@ import { TokenService } from './token.service';
 export class IdentityService {
   constructor(private apiService: ApiService, private tokenService: TokenService, private configService: ConfigService) { }
 
-  async createAccount(model: User): Promise<void> {
-    let response = await this.apiService.post(`${this.configService.identity}/user`, model);
+  async createAccount(model: User): Promise<any> {
+    return await this.apiService.post(`${this.configService.identity}/user`, model);
   }
+  async verifyEmail(model: User): Promise<any> {
+    return await this.apiService.put(`${this.configService.identity}/user/verifyEmail`, model);
+  }
+  async createPhone(model: User): Promise<any> {
+    return await this.apiService.put(`${this.configService.identity}/user/createPhone`, model);
+  }
+  async verifyPhone(model: User): Promise<any> {
+    return await this.apiService.put(`${this.configService.identity}/user/verifyPhone`, model);
+  }
+
 
 
   async login(model: Login): Promise<void> {

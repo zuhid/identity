@@ -7,16 +7,21 @@ import { ControlsModule } from '../../controls/controls.module';
 // Components
 import { LoginComponent } from './login/login.component';
 import { CreateAccountComponent } from './create-account/create-account.component';
+import { TfaComponent } from './tfa/tfa.component';
+// import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 const routes: Routes = [
   { path: "login", component: LoginComponent },
+  // { path: "tfa", component: TfaComponent },
   { path: "**", redirectTo: "login" },
 ];
 
 @NgModule({
   declarations: [
     LoginComponent,
-    CreateAccountComponent
+    CreateAccountComponent,
+    TfaComponent,
+    // VerifyEmailComponent
   ],
   imports: [FormsModule, CommonModule, ControlsModule, RouterModule.forChild(routes)],
 })

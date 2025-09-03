@@ -10,16 +10,20 @@ import { AuthenticationGuard, AuthorizationGuard } from '../guards';
 import { CreateAccountComponent } from './identity/create-account/create-account.component';
 import { LoginComponent } from './login/login.component';
 import { IndexComponent } from './index/index.component';
+import { VerifyEmailComponent } from './identity/verify-email/verify-email.component';
+import { TfaComponent } from './identity/tfa/tfa.component';
 
 const routes: Routes = [
   // { path: "login", component: LoginComponent },
   { path: "identity/create-account", component: CreateAccountComponent },
+  { path: "identity/verify-email", component: VerifyEmailComponent },
+  { path: "identity/tfa", component: TfaComponent },
   { path: "identity", loadChildren: () => import("./identity/identity.module").then((m) => m.IdentityModule) },
   {
     path: "",
     component: IndexComponent,
-    canActivate: [AuthenticationGuard],
-    canActivateChild: [AuthorizationGuard],
+    // canActivate: [AuthenticationGuard],
+    // canActivateChild: [AuthorizationGuard],
     children: [
       { path: "admin", loadChildren: () => import("./admin/admin.module").then((m) => m.AdminModule) },
     ],

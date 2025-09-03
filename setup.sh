@@ -33,7 +33,7 @@ build_server(){
   # remove the image
   docker container rm "$postgres_container" --force
   # Run the PostgreSQL container
-  docker run --name $postgres_container --publish 5432:5432 --detach \
+  docker run --name $postgres_container --publish 5435:5432 --detach \
     --env "POSTGRES_USER=$postgres_user" \
     --env "POSTGRES_PASSWORD=$postgres_password" \
     $postgres_image
@@ -118,4 +118,4 @@ clear
 # build_server
 build_database Identity Identity Identity
 # build_database BaseApi Identity Log
-# build-database-log
+build-database-log
