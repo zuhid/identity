@@ -7,28 +7,29 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 import { ControlsModule } from '../controls/controls.module';
 import { AuthenticationGuard, AuthorizationGuard } from '../guards';
-import { CreateAccountComponent } from './identity/create-account/create-account.component';
+// import { CreateAccountComponent } from './identity/create-account/create-account.component';
 import { LoginComponent } from './login/login.component';
 import { IndexComponent } from './index/index.component';
-import { VerifyEmailComponent } from './identity/verify-email/verify-email.component';
-import { TfaComponent } from './identity/tfa/tfa.component';
+// import { VerifyEmailComponent } from './identity/verify-email/verify-email.component';
+// import { TfaComponent } from './identity/tfa/tfa.component';
 
 const routes: Routes = [
   // { path: "login", component: LoginComponent },
-  { path: "identity/create-account", component: CreateAccountComponent },
-  { path: "identity/verify-email", component: VerifyEmailComponent },
-  { path: "identity/tfa", component: TfaComponent },
-  { path: "identity", loadChildren: () => import("./identity/identity.module").then((m) => m.IdentityModule) },
-  {
-    path: "",
-    component: IndexComponent,
-    // canActivate: [AuthenticationGuard],
-    // canActivateChild: [AuthorizationGuard],
-    children: [
-      { path: "admin", loadChildren: () => import("./admin/admin.module").then((m) => m.AdminModule) },
-    ],
-  },
-  { path: "**", redirectTo: "identity/create-account" },
+  // { path: "identity/create-account", component: CreateAccountComponent },
+  // { path: "identity/verify-email", component: VerifyEmailComponent },
+  // { path: "identity/tfa", component: TfaComponent },
+  // { path: "identity", loadChildren: () => import("./identity/identity.module").then((m) => m.IdentityModule) },
+  { path: "account", loadChildren: () => import("./account/account.module").then((m) => m.AccountModule) },
+  // {
+  //   path: "",
+  //   component: IndexComponent,
+  //   canActivate: [AuthenticationGuard],
+  //   canActivateChild: [AuthorizationGuard],
+  //   children: [
+  //     { path: "admin", loadChildren: () => import("./admin/admin.module").then((m) => m.AdminModule) },
+  //   ],
+  // },
+  { path: "**", redirectTo: "account" },
 ];
 
 

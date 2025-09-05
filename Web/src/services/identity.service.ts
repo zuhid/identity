@@ -8,6 +8,7 @@ import { TokenService } from './token.service';
 export class IdentityService {
   constructor(private apiService: ApiService, private tokenService: TokenService, private configService: ConfigService) { }
 
+  // old
   async createAccount(model: User): Promise<any> {
     return await this.apiService.post(`${this.configService.identity}/user`, model);
   }

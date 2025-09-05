@@ -10,6 +10,6 @@ public class AppSetting(IConfiguration configuration)
     private static string GetConnectionString(IConfiguration configuration, string connString)
     {
         return (configuration.GetConnectionString(connString) ?? "")
-          .Replace("[db_credential]", configuration.GetValue<string>("db_credential"), StringComparison.Ordinal); // Replace "[db_credential]" with value from secrets
+          .Replace("[postgres_server]", configuration.GetValue<string>("postgres_server"), StringComparison.Ordinal); // Replace "[postgres_server]" with value from secrets
     }
 }

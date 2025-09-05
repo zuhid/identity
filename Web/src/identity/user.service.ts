@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService, ConfigService, TokenService } from '../services';
-import { Login, LoginResponse } from '../models';
+import { Login, LoginResponse, User } from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  private baseUrl = '';
 
-  constructor(private apiService: ApiService, private tokenService: TokenService, private configService: ConfigService) { }
+  constructor(private apiService: ApiService, private configService: ConfigService) {
+    this.baseUrl = `${this.configService.identity}/user`;
+  }
 
-  get = (): Observable<any> => this.apiService.getJson(`${this.configService.identity}/user`);
-
-  async login(model: Login) {
-    let loginResponse: LoginResponse = await this.apiService.post(`${this.configService.identity}/login`, model);
-    this.tokenService.setAuthToken(loginResponse?.authToken);
+  async create(model: User) {
+    return await this.apiService.post(`${this.baseUrl}`, model);
   }
 }
