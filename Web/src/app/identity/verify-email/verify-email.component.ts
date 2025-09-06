@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IdentityService } from '../../../services';
 import { User } from '../../../models';
+import { UserService } from '../../../identity';
 
 @Component({
   selector: 'nc-verify-email',
@@ -10,7 +11,7 @@ import { User } from '../../../models';
   styleUrl: './verify-email.component.scss'
 })
 export class VerifyEmailComponent {
-  constructor(private identityService: IdentityService, private route: ActivatedRoute) { }
+  constructor(private userService: UserService, private route: ActivatedRoute) { }
   async ngOnInit(): Promise<void> {
 
     this.route.queryParamMap.subscribe(async params => {
@@ -18,7 +19,7 @@ export class VerifyEmailComponent {
         email: params.get('email') ?? "",
         emailToken: params.get('emailToken') ?? ""
       };
-      var result = await this.identityService.verifyEmail(model);
+      var result = await this.userService.verifyEmail(model);
       alert(result);
     });
   }

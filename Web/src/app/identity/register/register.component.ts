@@ -1,24 +1,25 @@
 import { Component } from '@angular/core';
 import { User } from '../../../models';
-import { IdentityService } from '../../../services';
-import { Router } from '@angular/router';
 import { UserService } from '../../../identity';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'nc-create',
+  selector: 'nc-register',
   standalone: false,
-  templateUrl: './create.component.html',
-  styleUrl: './create.component.scss'
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.scss'
 })
-export class CreateComponent {
+export class RegisterComponent {
   public model: User = {
     email: 'admin@company.com',
     password: 'P@ssw0rd',
   };
 
+
   constructor(private userService: UserService, private router: Router) { }
 
-  createAccount() {
-    this.userService.create(this.model);
+  async onRegister() {
+    var result = await this.userService.register(this.model);
+    alert(result);
   }
 }

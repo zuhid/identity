@@ -2,7 +2,7 @@
 
 ################################################## variables ##################################################
 # postgres_image="postgres:17"
-postgres_image="postgis/postgis:17-master"
+postgres_image="postgres:17"
 postgres_container="postgres_container"
 postgres_user="postgres"
 postgres_password="P@ssw0rd"
@@ -88,7 +88,7 @@ clear
 time {
   # set_secrets
   # update_dotnet_packages
-  # build_server
+  build_server
   build_database Identity Identity Identity
   # build_database BaseApi Identity Log
 }

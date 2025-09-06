@@ -12,14 +12,16 @@ import { LoginComponent } from './login/login.component';
 import { IndexComponent } from './index/index.component';
 // import { VerifyEmailComponent } from './identity/verify-email/verify-email.component';
 // import { TfaComponent } from './identity/tfa/tfa.component';
+// import { RegisterComponent } from './identity/register/register.component';
 
 const routes: Routes = [
+  // { path: "identity/register", component: RegisterComponent },
   // { path: "login", component: LoginComponent },
   // { path: "identity/create-account", component: CreateAccountComponent },
   // { path: "identity/verify-email", component: VerifyEmailComponent },
   // { path: "identity/tfa", component: TfaComponent },
-  // { path: "identity", loadChildren: () => import("./identity/identity.module").then((m) => m.IdentityModule) },
-  { path: "account", loadChildren: () => import("./account/account.module").then((m) => m.AccountModule) },
+  { path: "identity", loadChildren: () => import("./identity/identity.module").then((m) => m.IdentityModule) },
+  // { path: "account", loadChildren: () => import("./account/account.module").then((m) => m.AccountModule) },
   // {
   //   path: "",
   //   component: IndexComponent,
@@ -29,7 +31,7 @@ const routes: Routes = [
   //     { path: "admin", loadChildren: () => import("./admin/admin.module").then((m) => m.AdminModule) },
   //   ],
   // },
-  { path: "**", redirectTo: "account" },
+  { path: "**", redirectTo: "identity/register" },
 ];
 
 
