@@ -44,4 +44,3 @@ class SmtpServer
         stream.Write(response, 0, response.Length);
     }
 }
-

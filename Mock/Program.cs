@@ -1,9 +1,9 @@
-﻿class Program
+class Program
 {
-  static void Main()
-  {
-    // TotpServer.Run();
-    MailhogClient.Run();
-    // SmtpServer.Run();
-  }
+    static void Main()
+    {
+        // TotpServer.Run();
+        MailhogClient.Run();
+        // SmtpServer.Run();
+    }
 }

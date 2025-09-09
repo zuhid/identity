@@ -2,7 +2,7 @@
 
 ################################################## variables ##################################################
 # postgres_image="postgres:17"
-postgres_image="postgres:17"
+postgres_image="postgis/postgis:17-master"
 postgres_container="postgres_container"
 postgres_user="postgres"
 postgres_password="P@ssw0rd"
@@ -31,21 +31,20 @@ update_dotnet_packages() {
 }
 
 build_server(){
-  # remove the image
-  docker container rm "$postgres_container" --force
-  # Run the PostgreSQL container
-  docker run --name $postgres_container --publish $postgres_port:5432 --detach \
-    --env "POSTGRES_USER=$postgres_user" \
-    --env "POSTGRES_PASSWORD=$postgres_password" \
-    $postgres_image
+  ################################################## build postgres
+  docker container rm "$postgres_container" --force # remove the image
+  docker run --name $postgres_container --publish 5432:5432 --detach --env "POSTGRES_USER=$postgres_user" --env "POSTGRES_PASSWORD=$postgres_password" $postgres_image # run container
+  docker exec -it $postgres_container psql -U $postgres_user -d $dbname -c 'CREATE USER dbuser WITH PASSWORD 'P@ssw0rd';ALTER USER dbuser WITH SUPERUSER;' # run post script
 
-  # remove the image
-  docker container rm mailhog_container --force
-  # Run the PostgreSQL container
-  docker run --name mailhog_container --publish 1025:1025 --publish 8025:8025 --detach mailhog/mailhog
+  ################################################## build mailhog
+  docker container rm mailhog_container --force  # remove the image
+  docker run --name mailhog_container --publish 1025:1025 --publish 8025:8025 --detach mailhog/mailhog # run container
 }
 
 build_database(){
+  # $1 = project
+  # $2 = startup-project
+  # $3 = Context Name
   dbname=${3,,} # get the database in lower case
   docker start $postgres_container # start the container
 
@@ -54,7 +53,7 @@ build_database(){
   dotnet ef migrations add initial --project $1 --startup-project $2 --context "$3Context" # create migration
   dotnet ef migrations script --project $1 --startup-project $2 --context "$3Context" --output $1/Migrations/script.sql # create script for review
 
-  ################################################## build log database
+  ################################################## rebuild log database
   docker exec $postgres_container bash -c "dropdb --username=$postgres_user --if-exists --force log" # drop database
   docker exec $postgres_container bash -c "createdb --username=$postgres_user log" # create database
   docker exec -it $postgres_container psql -U $postgres_user -d log -c '
@@ -73,7 +72,7 @@ build_database(){
   ################################################## build identity database
   docker exec $postgres_container bash -c "dropdb --username=$postgres_user --if-exists --force $dbname" # drop database
   docker exec $postgres_container bash -c "createdb --username=$postgres_user $dbname" # create database
-  ##### create __EFMigrationsHistory table
+  ################################################## create __EFMigrationsHistory table
   docker exec -it $postgres_container psql -U $postgres_user -d $dbname -c '
   create table "__EFMigrationsHistory" (
     "MigrationId" character varying(150) not null,
@@ -88,7 +87,7 @@ clear
 time {
   # set_secrets
   # update_dotnet_packages
-  build_server
+  # build_server
   build_database Identity Identity Identity
   # build_database BaseApi Identity Log
 }

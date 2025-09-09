@@ -1,21 +1,21 @@
-﻿using OtpNet;
+using OtpNet;
 
 class TotpServer
 {
-  public static void Run()
-  {
-    // Your base32 secret key
-    string secretKey = "C2OMCUHLEPOBTRTGFSOJASVGTWRDJ4LO";
+    public static void Run()
+    {
+        // Your base32 secret key
+        string secretKey = "C2OMCUHLEPOBTRTGFSOJASVGTWRDJ4LO";
 
-    // Convert the base32 key to bytes
-    byte[] bytes = Base32Encoding.ToBytes(secretKey);
+        // Convert the base32 key to bytes
+        byte[] bytes = Base32Encoding.ToBytes(secretKey);
 
-    // Create a TOTP generator
-    var totp = new Totp(bytes);
+        // Create a TOTP generator
+        var totp = new Totp(bytes);
 
-    // Get the current TOTP code
-    string code = totp.ComputeTotp();
+        // Get the current TOTP code
+        string code = totp.ComputeTotp();
 
-    Console.WriteLine("Current TOTP code: " + code); // 677426
-  }
+        Console.WriteLine("Current TOTP code: " + code); // 677426
+    }
 }
