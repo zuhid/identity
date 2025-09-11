@@ -6,9 +6,11 @@
 # Setup local environment
 ```sh
 dotnet tool restore # restore tools
-
 cd Identity && dotnet run
 cd Web && npm start
+http://localhost:5215
+http://localhost:4000
+http://localhost:8025
 ```
 
 # Generate RSA public/private key

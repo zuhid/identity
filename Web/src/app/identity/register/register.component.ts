@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { User } from '../../../models';
-import { UserService } from '../../../identity';
-import { Router } from '@angular/router';
+import { UserService } from '@src/clients';
+import { User } from '@src/models';
 
 @Component({
   selector: 'nc-register',
@@ -15,8 +14,7 @@ export class RegisterComponent {
     password: 'P@ssw0rd',
   };
 
-
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService) { }
 
   async onRegister() {
     var result = await this.userService.register(this.model);

@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IdentityService } from '../../../services';
 import { User } from '../../../models';
-import { UserService } from '../../../identity';
+import { UserService } from '../../../clients';
 
 @Component({
   selector: 'nc-verify-email',

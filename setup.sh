@@ -85,6 +85,9 @@ build_database(){
 ################################################## execute ##################################################
 clear
 time {
+  docker start postgres_container
+  docker start mailhog_container
+
   # set_secrets
   # update_dotnet_packages
   # build_server

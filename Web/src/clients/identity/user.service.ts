@@ -13,7 +13,6 @@ export class UserService {
     this.baseUrl = `${this.configService.identity}/user`;
   }
 
-  async create(model: User) {
-    return await this.apiService.post(`${this.baseUrl}`, model);
-  }
+  async register(model: User) { return await this.apiService.post(`${this.baseUrl}/register`, model); }
+  verifyEmail = async (model: User) => await this.apiService.put(`${this.baseUrl}/verifyEmail`, model);
 }
