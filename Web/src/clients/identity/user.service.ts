@@ -15,4 +15,5 @@ export class UserService {
 
   async register(model: User) { return await this.apiService.post(`${this.baseUrl}/register`, model); }
   verifyEmail = async (model: User) => await this.apiService.put(`${this.baseUrl}/verifyEmail`, model);
+  login = async (model: User) => await this.apiService.put(`${this.baseUrl}/login`, model);
 }

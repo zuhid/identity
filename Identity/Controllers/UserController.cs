@@ -16,7 +16,8 @@ namespace Zuhid.Identity.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class UserController(UserRepository userRepository, IIdentityRepository identityRepository, IUserMapper userMapper,
-UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManager, ITokenService tokenService, IMessageService messageService) : ControllerBase
+    UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManager,
+    ITokenService tokenService, IMessageService messageService) : ControllerBase
 {
     [HttpPost("Register")]
     public async Task<bool> Register([NotNull] User user)
@@ -30,7 +31,10 @@ UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManag
             // Email token
             var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(userEntity).ConfigureAwait(false);
             string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
-            return await messageService.SendEmail("Your verification code", $"<a href='http://localhost:4200/identity/verify-email?email={userEntity.Email}&emailToken={encodedToken}'>Click to veirfy your Email</a>", userEntity.Email ?? "").ConfigureAwait(false);
+            return await messageService.SendEmail("Your verification code",
+                $"<a href='http://localhost:4200/identity/verify-email?email={userEntity.Email}&emailToken={encodedToken}'>Click to veirfy your Email</a>",
+                userEntity.Email ?? ""
+                ).ConfigureAwait(false);
         }
         // return response
         return false;
@@ -46,7 +50,30 @@ UserManager<Entities.User> userManager, SignInManager<Entities.User> signInManag
         var emailToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(user.EmailToken));
 
         var result = await userManager.ConfirmEmailAsync(userEntity, emailToken).ConfigureAwait(false);
+        foreach (var error in result.Errors) ModelState.AddModelError(error.Code, error.Description); // Add any errors to ModelState
         return result.Succeeded;
+    }
+
+    [AllowAnonymous]
+    [HttpPut("Login")]
+    public async Task<LoginResponse> Login(User user)
+    {
+        var loginResponse = new LoginResponse();
+        ArgumentNullException.ThrowIfNull(user);
+        var signInResult = await signInManager.PasswordSignInAsync(user.Email, user.Password, true, false).ConfigureAwait(false);
+        if (signInResult.Succeeded)
+        {
+            var userEntity = await userManager.FindByNameAsync(user.Email).ConfigureAwait(false);
+            if (userEntity != null)
+            {
+                loginResponse.AuthToken = tokenService.Build(userEntity.Id, [
+                    new("userName", userEntity.UserName ?? string.Empty),
+                    new("email", userEntity.Email ?? string.Empty),
+                    new("phoneNumber", userEntity.PhoneNumber ?? string.Empty),
+                ], []);
+            }
+        }
+        return loginResponse;
     }
 
 

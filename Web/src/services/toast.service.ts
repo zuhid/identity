@@ -11,8 +11,9 @@ export class ToastService {
     this.toastEvent = this._toastSubject.asObservable();
   }
 
-  error = (message: string) => this._toastSubject.next({
-    type: "error",
-    message: message,
-  });
+  error = (message: string) => this._toastSubject.next({ type: "error", message: message });
+  info = (message: string) => this._toastSubject.next({ type: "info", message: message });
+  secondary = (message: string) => this._toastSubject.next({ type: "secondary", message: message });
+  success = (message: string) => this._toastSubject.next({ type: "success", message: message });
+  warning = (message: string) => this._toastSubject.next({ type: "warning", message: message });
 }

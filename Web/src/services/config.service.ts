@@ -4,12 +4,7 @@ import { Injectable } from "@angular/core";
 export class ConfigService {
   private _config: any = {};
 
-  public load() {
-    fetch("/assets/config.json").then((res) => res.json().then((data) => (this._config = data)));
-  }
+  async loadConfig(): Promise<void> { this._config = await (await fetch('/config.json')).json(); }
 
-  public get identity() {
-    return "http://localhost:5215";
-    // return this._config.identity;
-  }
+  public get identity() { return this._config.identity; }
 }

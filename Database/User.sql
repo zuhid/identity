@@ -1,4 +1,6 @@
--- select * from Users;
+select *
+from Users;
+
 
 DELETE
 FROM Users;

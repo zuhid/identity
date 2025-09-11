@@ -1,4 +1,6 @@
-<div class="alert alert-danger" role="alert" *ngFor="let toast of toastList">
-  <span>{{ toast }}</span>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div *ngFor="let toast of toastList">
+  <div class="alert" [ngClass]="alertType(toast.type)" role=" alert">
+    <span>{{ toast.message }}</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
 </div>

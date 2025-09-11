@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { User } from '../../../models';
-import { IdentityService } from '../../../services';
+import { UserService } from '@src/clients';
 
 @Component({
   selector: 'nc-tfa',
@@ -9,7 +9,7 @@ import { IdentityService } from '../../../services';
   styleUrl: './tfa.component.scss'
 })
 export class TfaComponent {
-  constructor(private identityService: IdentityService) { }
+  constructor(private userService: UserService) { }
 
   public model: User = {
     email: "admin@company.com",
@@ -18,12 +18,12 @@ export class TfaComponent {
   };
 
   async createPhone() {
-    var result = await this.identityService.createPhone(this.model);
+    // var result = await this.userService.createPhone(this.model);
 
   }
 
   async verifyPhone() {
-    var result = await this.identityService.verifyPhone(this.model);
+    // var result = await this.userService.verifyPhone(this.model);
   }
 
 }

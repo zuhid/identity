@@ -9,6 +9,6 @@
     "**/bin": true,
     "**/node_modules": true,
     "**/obj": true,
-    "**/package-lock.json": true,
+    "**/package-lock.json": true
   }
 }

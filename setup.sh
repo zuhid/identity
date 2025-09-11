@@ -58,21 +58,20 @@ build_database(){
   docker exec $postgres_container bash -c "createdb --username=$postgres_user log" # create database
   docker exec -it $postgres_container psql -U $postgres_user -d log -c '
   create table log (
-      id uuid not null,
-      updated timestamp with time zone not null,
-      log_level text not null,
-      category text not null,
-      event_id text not null,
-      event_name text not null,
-      state text not null,
-      exception text not null,
-      constraint pk_log primary key (id)
+    id uuid not null,
+    updated timestamp with time zone not null,
+    log_level text not null,
+    category text not null,
+    event_id text not null,
+    event_name text not null,
+    state text not null,
+    exception text not null,
+    constraint pk_log primary key (id)
   );'
 
-  ################################################## build identity database
+  ################################################## rebuild identity database
   docker exec $postgres_container bash -c "dropdb --username=$postgres_user --if-exists --force $dbname" # drop database
   docker exec $postgres_container bash -c "createdb --username=$postgres_user $dbname" # create database
-  ################################################## create __EFMigrationsHistory table
   docker exec -it $postgres_container psql -U $postgres_user -d $dbname -c '
   create table "__EFMigrationsHistory" (
     "MigrationId" character varying(150) not null,
