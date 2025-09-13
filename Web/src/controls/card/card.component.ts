@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
-  selector: 'nc-card',
+  selector: 'zc-card',
   standalone: false,
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss'

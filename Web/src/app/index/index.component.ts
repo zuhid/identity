@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'nc-index',
+  selector: 'zc-index',
   standalone: false,
   templateUrl: './index.component.html',
   styleUrl: './index.component.scss'

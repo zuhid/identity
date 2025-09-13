@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { BaseControlComponent } from "../baseControl";
 
 @Component({
-  selector: 'nc-password',
+  selector: 'zc-password',
   standalone: false,
   templateUrl: './password.component.html',
   styleUrl: './password.component.scss',

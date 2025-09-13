@@ -4,7 +4,7 @@ import { UserService } from '@src/clients';
 import { User } from '@src/models';
 
 @Component({
-  selector: 'nc-verify-email',
+  selector: 'zc-verify-email',
   standalone: false,
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.scss'

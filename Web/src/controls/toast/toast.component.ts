@@ -3,7 +3,7 @@ import { ToastService } from "../../services";
 import { Toast } from "@src/models";
 
 @Component({
-  selector: "nc-toast",
+  selector: "zc-toast",
   templateUrl: "./toast.component.html",
   styleUrls: ["./toast.component.scss"],
   standalone: false

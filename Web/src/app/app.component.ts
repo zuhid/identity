@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'nc-root',
+  selector: 'zc-root',
   templateUrl: './app.component.html',
   standalone: false,
 })

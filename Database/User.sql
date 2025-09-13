@@ -1,6 +1,7 @@
-select *
-from Users;
+SELECT *
+FROM users;
 
 
 DELETE
-FROM Users;
+FROM users
+WHERE user_name = 'admin@company.com';

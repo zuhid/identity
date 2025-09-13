@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'nc-button',
+  selector: 'zc-button',
   standalone: false,
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss'

@@ -6,8 +6,13 @@
 # Setup local environment
 ```sh
 dotnet tool restore # restore tools
+
 cd Identity && dotnet run
 cd Web && npm start
+
+clear && dotnet run
+clear && npm start
+
 http://localhost:5215
 http://localhost:4200
 http://localhost:8025
@@ -23,7 +28,7 @@ openssl rsa -pubout -in private_key.pem -out public_key.pem # Extract the Public
 # Generate a new Angular application
 
 - `--directory Web` Create the project in the "Web" directory
-- `--prefix nc`Set the prefix for component selectors to "nc"
+- `--prefix zc`Set the prefix for component selectors to "zc"
 - `--server-routing=false` Without server-side routing for the initial setup
 - `--ssr=false` Without server side rendering
 - `--strict` Enable strict type checking in the application
@@ -33,7 +38,7 @@ openssl rsa -pubout -in private_key.pem -out public_key.pem # Extract the Public
 ```
 ng new \
   --directory Web \
-  --prefix nc \
+  --prefix zc \
   --server-routing=false \
   --skip-git \
   --skip-install \

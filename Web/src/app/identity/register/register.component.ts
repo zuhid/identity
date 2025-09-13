@@ -4,7 +4,7 @@ import { User } from '@src/models';
 import { ToastService } from '@src/services';
 
 @Component({
-  selector: 'nc-register',
+  selector: 'zc-register',
   standalone: false,
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'

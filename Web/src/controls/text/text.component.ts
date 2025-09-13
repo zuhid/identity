@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { BaseControlComponent } from "../baseControl";
 
 @Component({
-  selector: 'nc-text',
+  selector: 'zc-text',
   standalone: false,
   templateUrl: './text.component.html',
   styleUrl: './text.component.scss',

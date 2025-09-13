@@ -19,7 +19,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "nc",
+      "prefix": "zc",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",

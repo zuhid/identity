@@ -8,9 +8,9 @@
       <ng-content></ng-content>
       <ng-container>
         <div class="card-foot">
-          <ng-content select="[nc-card-footer]"></ng-content>
-          <nc-button *ngIf="saveClick.observers.length>0" id="save" [text]="saveText"
-            (click)="saveClick.emit()"></nc-button>
+          <ng-content select="[zc-card-footer]"></ng-content>
+          <zc-button *ngIf="saveClick.observers.length>0" id="save" [text]="saveText"
+            (click)="saveClick.emit()"></zc-button>
         </div>
       </ng-container>
     </form>

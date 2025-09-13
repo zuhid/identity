@@ -5,7 +5,7 @@ import { Login } from '@src/models';
 import { TokenService } from '@src/services';
 
 @Component({
-  selector: 'nc-login',
+  selector: 'zc-login',
   standalone: false,
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -22,7 +22,7 @@ export class LoginComponent {
   async login() {
     let loginResponse = await this.userService.login(this.model);
     this.tokenService.setAuthToken(loginResponse?.authToken);
-    this.router.navigate(["/admin/user"]);
+    this.router.navigate(["/identity/user"]);
   }
   // async smsToken() { this.identityService.smsToken(this.model); }
   // async emailToken() { this.identityService.emailToken(this.model); }

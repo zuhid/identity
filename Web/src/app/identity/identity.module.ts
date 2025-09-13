@@ -5,25 +5,16 @@ import { FormsModule } from '@angular/forms';
 import { ControlsModule } from '../../controls/controls.module';
 
 // Components
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { TfaComponent } from './tfa/tfa.component';
-import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { UserComponent } from './user/user.component';
 
 const routes: Routes = [
-  { path: "login", component: LoginComponent },
-  { path: "register", component: RegisterComponent },
-  { path: "tfa", component: TfaComponent },
-  { path: "verify-email", component: VerifyEmailComponent },
+  { path: "user", component: UserComponent },
   { path: "**", redirectTo: "login" },
 ];
 
 @NgModule({
   declarations: [
-    LoginComponent,
-    RegisterComponent,
-    TfaComponent,
-    VerifyEmailComponent
+    UserComponent,
   ],
   imports: [FormsModule, CommonModule, ControlsModule, RouterModule.forChild(routes)],
 })

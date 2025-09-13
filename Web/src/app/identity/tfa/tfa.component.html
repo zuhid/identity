@@ -1,9 +1,9 @@
-<nc-card header="Verify Phone">
-  <nc-text label="Email" [(ngModel)]='model.email'></nc-text>
-  <nc-text label="Phone" [(ngModel)]='model.phone'></nc-text>
-  <nc-text label="Token" [(ngModel)]='model.phoneToken'></nc-text>
-  <ng-container nc-card-footer>
-    <nc-button text="Create Phone" (click)="createPhone()"></nc-button>
-    <nc-button text="Verify Phone" (click)="verifyPhone()"></nc-button>
+<zc-card header="Verify Phone">
+  <zc-text label="Email" [(ngModel)]='model.email'></zc-text>
+  <zc-text label="Phone" [(ngModel)]='model.phone'></zc-text>
+  <zc-text label="Token" [(ngModel)]='model.phoneToken'></zc-text>
+  <ng-container zc-card-footer>
+    <zc-button text="Create Phone" (click)="createPhone()"></zc-button>
+    <zc-button text="Verify Phone" (click)="verifyPhone()"></zc-button>
   </ng-container>
-</nc-card>
+</zc-card>

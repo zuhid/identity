@@ -3,7 +3,7 @@ import { User } from '../../../models';
 import { UserService } from '@src/clients';
 
 @Component({
-  selector: 'nc-tfa',
+  selector: 'zc-tfa',
   standalone: false,
   templateUrl: './tfa.component.html',
   styleUrl: './tfa.component.scss'
