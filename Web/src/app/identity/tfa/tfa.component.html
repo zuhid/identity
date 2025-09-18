@@ -1,9 +1,11 @@
-<zc-card header="Verify Phone">
+<zc-card header="TFA">
   <zc-text label="Email" [(ngModel)]='model.email'></zc-text>
-  <zc-text label="Phone" [(ngModel)]='model.phone'></zc-text>
-  <zc-text label="Token" [(ngModel)]='model.phoneToken'></zc-text>
+  <zc-text label="Token" [(ngModel)]='model.emailToken' *ngIf="tfaType=='email'"></zc-text>
+  <zc-text label="Token" [(ngModel)]='model.phoneToken' *ngIf="tfaType=='phone'"></zc-text>
   <ng-container zc-card-footer>
-    <zc-button text="Create Phone" (click)="createPhone()"></zc-button>
-    <zc-button text="Verify Phone" (click)="verifyPhone()"></zc-button>
+    <zc-button text="Email Token" (click)="emailSendToken()"></zc-button>
+    <zc-button text="SMS Token" (click)="phoneSendToken()"></zc-button>
+    <zc-button text="Verify Token" (click)="emailVerifyToken()" *ngIf="tfaType=='email'"></zc-button>
+    <zc-button text="Verify Token" (click)="phoneVerifyToken()" *ngIf="tfaType=='phone'"></zc-button>
   </ng-container>
 </zc-card>

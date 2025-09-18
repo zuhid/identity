@@ -41,19 +41,6 @@ public class UserController(UserRepository userRepository, IIdentityRepository i
     }
 
 
-    [HttpPut("VerifyEmail")]
-    public async Task<bool> VerifyEmail(User user)
-    {
-        ArgumentNullException.ThrowIfNull(user);
-        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
-        if (userEntity == null) return false;
-        var emailToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(user.EmailToken));
-
-        var result = await userManager.ConfirmEmailAsync(userEntity, emailToken).ConfigureAwait(false);
-        foreach (var error in result.Errors) ModelState.AddModelError(error.Code, error.Description); // Add any errors to ModelState
-        return result.Succeeded;
-    }
-
     [AllowAnonymous]
     [HttpPut("Login")]
     public async Task<LoginResponse> Login(User user)
@@ -75,6 +62,70 @@ public class UserController(UserRepository userRepository, IIdentityRepository i
         }
         return loginResponse;
     }
+
+    [HttpPut("EmailVerify")]
+    public async Task<bool> EmailVerify(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+        if (userEntity == null) return false;
+        var emailToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(user.EmailToken));
+
+        var result = await userManager.ConfirmEmailAsync(userEntity, emailToken).ConfigureAwait(false);
+        foreach (var error in result.Errors) ModelState.AddModelError(error.Code, error.Description); // Add any errors to ModelState
+        return result.Succeeded;
+    }
+
+    [HttpPut("EmailSendToken")]
+    public async Task<bool> EmailSendToken(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+        if (userEntity == null) return false;
+        var tfa = await userManager.GenerateTwoFactorTokenAsync(userEntity, TokenOptions.DefaultPhoneProvider).ConfigureAwait(false);
+        return await messageService.SendEmail("Your verification code", $"Here is your tfa verification code: {tfa}", userEntity.Email ?? "").ConfigureAwait(false);
+    }
+
+    [HttpPut("EmailVerifyToken")]
+    public async Task<bool> EmailVerifyToken(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+        if (userEntity == null) return false;
+        return await userManager.VerifyTwoFactorTokenAsync(userEntity, TokenOptions.DefaultPhoneProvider, user.EmailToken).ConfigureAwait(false);
+    }
+
+    [HttpPut("PhoneSendToken")]
+    public async Task<bool> PhoneSendToken(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+        if (userEntity == null) return false;
+        var tfa = await userManager.GenerateTwoFactorTokenAsync(userEntity, TokenOptions.DefaultPhoneProvider).ConfigureAwait(false);
+        return await messageService.SendSms(userEntity.PhoneNumber ?? "None", $"Here is your tfa verification code: {tfa}").ConfigureAwait(false);
+    }
+
+    [HttpPut("PhoneVerifyToken")]
+    public async Task<bool> PhoneVerifyToken(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Phone).ConfigureAwait(false);
+        if (userEntity == null) return false;
+        return await userManager.VerifyTwoFactorTokenAsync(userEntity, TokenOptions.DefaultPhoneProvider, user.PhoneToken).ConfigureAwait(false);
+    }
+
+
+    [HttpPut("AuthenticateGetToken")]
+    public async Task<bool> AuthenticateGetToken(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        var userEntity = await userManager.FindByEmailAsync(user.Phone).ConfigureAwait(false);
+        if (userEntity == null) return false;
+        return userManager.RegisterTokenProvider("Google");
+    }
+
+
+
 
 
     // [AllowAnonymous]

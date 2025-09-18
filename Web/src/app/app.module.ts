@@ -14,11 +14,13 @@ import { IndexComponent } from './index/index.component';
 import { LoginComponent } from './identity/login/login.component';
 import { RegisterComponent } from './identity/register/register.component';
 import { VerifyEmailComponent } from './identity/verify-email/verify-email.component';
+import { TfaComponent } from './identity/tfa/tfa.component';
 
 const routes: Routes = [
   { path: "identity/login", component: LoginComponent },
   { path: "identity/register", component: RegisterComponent },
   { path: "identity/verify-email", component: VerifyEmailComponent },
+  { path: "identity/tfa", component: TfaComponent },
   {
     path: "",
     component: IndexComponent,
@@ -41,6 +43,7 @@ const initializeAppFn = () => inject(ConfigService).loadConfig();
     LoginComponent,
     RegisterComponent,
     VerifyEmailComponent,
+    TfaComponent,
   ],
   imports: [
     BrowserModule,

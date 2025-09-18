@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { User } from '../../../models';
 import { UserService } from '@src/clients';
+import { ToastService } from '@src/services';
 
 @Component({
   selector: 'zc-tfa',
@@ -9,21 +10,39 @@ import { UserService } from '@src/clients';
   styleUrl: './tfa.component.scss'
 })
 export class TfaComponent {
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private toastService: ToastService) { }
 
   public model: User = {
     email: "admin@company.com",
+    emailToken: "",
     phone: "789-456-1230",
-    phoneToken: ""
+    phoneToken: "",
   };
+  public tfaType: string = "";
 
-  async createPhone() {
-    // var result = await this.userService.createPhone(this.model);
-
+  async emailSendToken() {
+    var result = await this.userService.emailSendToken(this.model);
+    if (result) {
+      this.tfaType = "email";
+      this.toastService.success("Token sent to you email");
+    }
   }
 
-  async verifyPhone() {
-    // var result = await this.userService.verifyPhone(this.model);
+  async emailVerifyToken() {
+    var result = await this.userService.emailVerifyToken(this.model);
+    this.toastService.success("Login Succesful");
   }
 
+  async phoneSendToken() {
+    var result = await this.userService.phoneSendToken(this.model);
+    if (result) {
+      this.tfaType = "email";
+      this.toastService.success("Token sent to you email");
+    }
+  }
+
+  async phoneVerifyToken() {
+    var result = await this.userService.phoneVerifyToken(this.model);
+    this.toastService.success("Login Succesful");
+  }
 }
