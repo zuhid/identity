@@ -115,14 +115,14 @@ public class UserController(UserRepository userRepository, IIdentityRepository i
     }
 
 
-    [HttpPut("AuthenticateGetToken")]
-    public async Task<bool> AuthenticateGetToken(User user)
-    {
-        ArgumentNullException.ThrowIfNull(user);
-        var userEntity = await userManager.FindByEmailAsync(user.Phone).ConfigureAwait(false);
-        if (userEntity == null) return false;
-        return userManager.RegisterTokenProvider("Google");
-    }
+    // [HttpPut("AuthenticateGetToken")]
+    // public async Task<bool> AuthenticateGetToken(User user)
+    // {
+    //     ArgumentNullException.ThrowIfNull(user);
+    //     var userEntity = await userManager.FindByEmailAsync(user.Phone).ConfigureAwait(false);
+    //     if (userEntity == null) return false;
+    //     return userManager.RegisterTokenProvider("Google");
+    // }
 
 
 

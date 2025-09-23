@@ -1,20 +1,12 @@
 #!/bin/bash
 
 ################################################## variables ##################################################
-# postgres_image="postgres:17"
 postgres_image="postgis/postgis:17-master"
 postgres_container="postgres_container"
 postgres_user="postgres"
 postgres_password="P@ssw0rd"
-postgres_port="5432"
 
 ################################################## functions ##################################################
-
-set_secrets(){
-  dotnet user-secrets --project Identity clear
-  dotnet user-secrets --project Identity set postgres_server "Server=localhost;Port=$postgres_port;User Id=postgres;Password=P@ssw0rd"
-  dotnet user-secrets --project Identity list
-}
 
 # This script updates all outdated NuGet packages in .NET projects within the current directory.
 update_dotnet_packages() {
@@ -28,6 +20,12 @@ update_dotnet_packages() {
   done
   # dotnet list package --outdated
   dotnet tool update --all # Update all tools
+}
+
+set_secrets(){
+  dotnet user-secrets --project Identity clear
+  dotnet user-secrets --project Identity set postgres_server "Server=localhost;User Id=postgres;Password=P@ssw0rd"
+  dotnet user-secrets --project Identity list
 }
 
 build_server(){
@@ -84,11 +82,11 @@ build_database(){
 ################################################## execute ##################################################
 clear
 time {
-  docker start postgres_container
-  docker start mailhog_container
+  # docker start postgres_container
+  # docker start mailhog_container
 
-  # set_secrets
   # update_dotnet_packages
+  # set_secrets
   # build_server
   build_database Identity Identity Identity
   # build_database BaseApi Identity Log

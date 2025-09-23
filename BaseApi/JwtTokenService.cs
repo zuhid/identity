@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Zuhid.BaseApi;
 
-public class JwtTokenService(IdentityModel identityModel) : ITokenService
+public class JwtTokenService(BaseAppSetting.IdentitySetting identityModel) : ITokenService
 {
     public void Configure(JwtBearerOptions options)
     {

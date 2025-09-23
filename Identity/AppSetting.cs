@@ -1,15 +1,18 @@
+using Zuhid.BaseApi;
+
 namespace Zuhid.Identity;
 
-public class AppSetting(IConfiguration configuration)
+public class AppSetting : BaseAppSetting
 {
-    public string Name { get; set; } = "Identity";
-    public string Version { get; set; } = "1.0";
-    public string CorsOrigin { get; set; } = "CorsOrigin";
-    public string Identity { get; set; } = GetConnectionString(configuration, "Identity");
-    public string Log { get; set; } = GetConnectionString(configuration, "Log");
-    private static string GetConnectionString(IConfiguration configuration, string connString)
+    public AppSetting(IConfiguration configuration) : base(configuration)
     {
-        return (configuration.GetConnectionString(connString) ?? "")
-          .Replace("[postgres_server]", configuration.GetValue<string>("postgres_server"), StringComparison.Ordinal); // Replace "[postgres_server]" with value from secrets
+        if (configuration != null)
+        {
+            configuration.GetSection("AppSetting").Bind(this);
+            IdentityContext = GetConnectionString(configuration, "Identity");
+        }
     }
+
+    public override string Name { get; set; } = string.Empty;
+    public string IdentityContext { get; set; } = string.Empty;
 }

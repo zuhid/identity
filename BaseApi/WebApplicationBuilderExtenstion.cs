@@ -1,27 +1,24 @@
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Npgsql.Replication;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Zuhid.BaseApi;
 
-public class BaseWebApplication(string[] args, string title, string version, string corsOrigin, IdentityModel identityModel)
+public static class WebApplicationBuilderExtenstion
 {
-    public WebApplicationBuilder Builder { get; private set; } = WebApplication.CreateBuilder(args);
-
-    public BaseWebApplication AddServices()
+    public static WebApplicationBuilder AddServices(this WebApplicationBuilder builder, BaseAppSetting baseAppSetting)
     {
-        var services = Builder.Services;
-        services.AddCors(options => options.AddPolicy(corsOrigin, policy => policy
+        var services = builder.Services;
+        services.AddCors(options => options.AddPolicy(baseAppSetting.CorsOrigin, policy => policy
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()
         ));
-
         services
             .AddAuthentication()
-            .AddJwtBearer("Bearer", option => new JwtTokenService(identityModel).Configure(option));
-
-
+            .AddJwtBearer("Bearer", option => new JwtTokenService(baseAppSetting.Identity).Configure(option));
         services.AddControllers().AddMvcOptions(options =>
         {
             // options.Filters.Add(new AuthorizeFilter());
@@ -29,40 +26,47 @@ public class BaseWebApplication(string[] args, string title, string version, str
             options.Filters.Add<ActionFilter>();
             options.Filters.Add<ExceptionFilter>();
         });
-        services.AddSwaggerGen(AddSwagger);
-        services.AddScoped<ITokenService>(option => new JwtTokenService(identityModel)); // Add identity service
-        services.AddScoped<IMessageService, MessageService>(); // Add messageservice
-        return this;
+        services.AddSwaggerGen(options => AddSwagger(options, baseAppSetting.Name, baseAppSetting.Version));
+
+        services.AddScoped<ITokenService>(option => new JwtTokenService(baseAppSetting.Identity)); // Add identity service
+        services.AddScoped<IMessageService, MessageService>(); // Add message service
+
+        if (!string.IsNullOrEmpty(baseAppSetting.LogContext))
+        {
+            builder.AddDatabase<LogContext, LogContext>(baseAppSetting.LogContext);
+            using var databaseLoggerProvider = new DatabaseLoggerProvider(services.BuildServiceProvider().GetRequiredService<LogContext>());
+            builder.Logging.AddProvider(databaseLoggerProvider);
+        }
+        return builder;
     }
 
-    public WebApplication Build()
+    public static void AddDatabase<ITContext, TContext>(this WebApplicationBuilder builder, string connectionString)
+        where ITContext : class
+        where TContext : DbContext, ITContext
     {
-        var app = Builder.Build();
+        builder.Services.AddDbContext<TContext>(options => options
+          .UseNpgsql(connectionString)
+          .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // setting to no tracking to improve performance
+        );
+        builder.Services.AddScoped<ITContext, TContext>();
+    }
+
+    public static WebApplication Build(this WebApplicationBuilder builder, BaseAppSetting baseAppSetting)
+    {
+        var app = builder.Build();
         app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{title} v{version}"));
-        app.UseCors(corsOrigin);
+        app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/v{baseAppSetting.Version}/swagger.json", $"{baseAppSetting.Name} v{baseAppSetting.Version}"));
+        app.UseCors(baseAppSetting.CorsOrigin);
         app.UseRouting();
         // app.UseAuthorization();
 
         // on the base page, show a simple message
         app.MapGet("/", async context => await context.Response.WriteAsync("<html><body style='padding:100px 0;text-align:center;font-size:xxx-large;'><a href='/swagger'>View Swagger</a></body></html>"));
         app.MapControllers();
-
         return app;
     }
 
-    public void AddDatabase<ITContext, TContext>(string connectionString)
-        where ITContext : class
-        where TContext : DbContext, ITContext
-    {
-        Builder.Services.AddDbContext<TContext>(options => options
-          .UseNpgsql(connectionString)
-          .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // setting to no tracking to improve performance
-        );
-        Builder.Services.AddScoped<ITContext, TContext>();
-    }
-
-    private void AddSwagger(SwaggerGenOptions options)
+    private static void AddSwagger(SwaggerGenOptions options, string title, string version)
     {
         options.SwaggerDoc($"v{version}", new OpenApiInfo
         {
@@ -97,3 +101,4 @@ public class BaseWebApplication(string[] args, string title, string version, str
         options.EnableAnnotations();
     }
 }
+
