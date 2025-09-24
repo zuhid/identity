@@ -5,7 +5,8 @@
 
 # Setup local environment
 ```sh
-dotnet tool restore # restore tools
+dotnet tool restore --tool-manifest ./.vscode/dotnet-tools.json # restore tools
+dotnet format --exclude **/Migrations --report Output/dotnet_format.json
 
 cd Identity && dotnet run
 cd Web && npm start

@@ -8,6 +8,7 @@ import { PasswordComponent } from './password/password.component';
 import { CardComponent } from './card/card.component';
 import { ButtonComponent } from './button/button.component';
 import { ToastComponent } from './toast/toast.component';
+import { QrCodeComponent } from './qr-code/qr-code.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { ToastComponent } from './toast/toast.component';
     PasswordComponent,
     CardComponent,
     ButtonComponent,
-    ToastComponent
+    ToastComponent,
+    QrCodeComponent,
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { ToastComponent } from './toast/toast.component';
     PasswordComponent,
     CardComponent,
     ButtonComponent,
-    ToastComponent
+    ToastComponent,
+    QrCodeComponent,
   ],
 })
 export class ControlsModule { }

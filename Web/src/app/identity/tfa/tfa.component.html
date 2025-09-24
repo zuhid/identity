@@ -2,10 +2,17 @@
   <zc-text label="Email" [(ngModel)]='model.email'></zc-text>
   <zc-text label="Token" [(ngModel)]='model.emailToken' *ngIf="tfaType=='email'"></zc-text>
   <zc-text label="Token" [(ngModel)]='model.phoneToken' *ngIf="tfaType=='phone'"></zc-text>
+  <zc-text label="Token" [(ngModel)]='model.phoneToken' *ngIf="qrdata!=''"></zc-text>
+  <zc-qr-code [text]="qrdata"></zc-qr-code>
+
   <ng-container zc-card-footer>
     <zc-button text="Email Token" (click)="emailSendToken()"></zc-button>
     <zc-button text="SMS Token" (click)="phoneSendToken()"></zc-button>
     <zc-button text="Verify Token" (click)="emailVerifyToken()" *ngIf="tfaType=='email'"></zc-button>
     <zc-button text="Verify Token" (click)="phoneVerifyToken()" *ngIf="tfaType=='phone'"></zc-button>
+
+    <zc-button text="GenerateQrCodeUri" (click)="generateQrCodeUri()"></zc-button>
+    <zc-button text="VerifyQrCode" (click)="verifyQrCode()"></zc-button>
+
   </ng-container>
 </zc-card>

@@ -19,6 +19,7 @@ export class TfaComponent {
     phoneToken: "",
   };
   public tfaType: string = "";
+  public qrdata: string = "";
 
   async emailSendToken() {
     var result = await this.userService.emailSendToken(this.model);
@@ -44,5 +45,15 @@ export class TfaComponent {
   async phoneVerifyToken() {
     var result = await this.userService.phoneVerifyToken(this.model);
     this.toastService.success("Login Succesful");
+  }
+
+  async generateQrCodeUri() {
+    var result = await this.userService.generateQrCodeUri(this.model);
+    this.qrdata = result.tfaToken;
+  }
+
+  async verifyQrCode() {
+    var result = await this.userService.verifyQrCode(this.model);
+    this.toastService.success(result);
   }
 }

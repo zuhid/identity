@@ -22,6 +22,6 @@ export class UserService {
   async phoneVerify(model: User) { return await this.apiService.put(`${this.baseUrl}/phoneVerify`, model); }
   async phoneSendToken(model: User) { return await this.apiService.put(`${this.baseUrl}/phoneSendToken`, model); }
   async phoneVerifyToken(model: User) { return await this.apiService.put(`${this.baseUrl}/phoneVerifyToken`, model); }
-
-
+  async generateQrCodeUri(model: User) { return await this.apiService.put(`${this.baseUrl}/generateQrCodeUri`, model); }
+  async verifyQrCode(model: User) { return await this.apiService.put(`${this.baseUrl}/verifyQrCode`, model); }
 }

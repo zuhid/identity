@@ -17,20 +17,21 @@ import { VerifyEmailComponent } from './identity/verify-email/verify-email.compo
 import { TfaComponent } from './identity/tfa/tfa.component';
 
 const routes: Routes = [
-  { path: "identity/login", component: LoginComponent },
-  { path: "identity/register", component: RegisterComponent },
-  { path: "identity/verify-email", component: VerifyEmailComponent },
-  { path: "identity/tfa", component: TfaComponent },
-  {
-    path: "",
-    component: IndexComponent,
-    canActivate: [AuthenticationGuard],
-    canActivateChild: [AuthorizationGuard],
-    children: [
-      { path: "identity", loadChildren: () => import("./identity/identity.module").then((m) => m.IdentityModule) },
-    ],
-  },
-  { path: "**", redirectTo: "identity/login" },
+  // { path: "identity/login", component: LoginComponent },
+  // { path: "identity/register", component: RegisterComponent },
+  // { path: "identity/verify-email", component: VerifyEmailComponent },
+  // { path: "identity/tfa", component: TfaComponent },
+  { path: "identity", loadChildren: () => import("./identity/identity.module").then((m) => m.IdentityModule) },
+  // {
+  //   path: "",
+  //   component: IndexComponent,
+  //   canActivate: [AuthenticationGuard],
+  //   canActivateChild: [AuthorizationGuard],
+  //   children: [
+  //     { path: "identity", loadChildren: () => import("./identity/identity.module").then((m) => m.IdentityModule) },
+  //   ],
+  // },
+  { path: "**", redirectTo: "identity/register" },
 ];
 
 // Get the application configuration before the app initializes

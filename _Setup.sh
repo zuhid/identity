@@ -1,10 +1,12 @@
 #!/bin/bash
 
 ################################################## variables ##################################################
+# postgres_image="postgres:17"
 postgres_image="postgis/postgis:17-master"
 postgres_container="postgres_container"
 postgres_user="postgres"
 postgres_password="P@ssw0rd"
+dbuser="dbuser"
 
 ################################################## functions ##################################################
 
@@ -32,7 +34,8 @@ build_server(){
   ################################################## build postgres
   docker container rm "$postgres_container" --force # remove the image
   docker run --name $postgres_container --publish 5432:5432 --detach --env "POSTGRES_USER=$postgres_user" --env "POSTGRES_PASSWORD=$postgres_password" $postgres_image # run container
-  docker exec -it $postgres_container psql -U $postgres_user -d $dbname -c 'CREATE USER dbuser WITH PASSWORD 'P@ssw0rd';ALTER USER dbuser WITH SUPERUSER;' # run post script
+  sleep 5 # wait for the container to be ready
+  docker exec -it $postgres_container psql -U $postgres_user -c "CREATE USER $dbuser WITH SUPERUSER PASSWORD '$postgres_password';" # run post script
 
   ################################################## build mailhog
   docker container rm mailhog_container --force  # remove the image
@@ -45,11 +48,6 @@ build_database(){
   # $3 = Context Name
   dbname=${3,,} # get the database in lower case
   docker start $postgres_container # start the container
-
-  ################################################## recreate migration
-  rm -rf $1/Migrations # remove migration folder
-  dotnet ef migrations add initial --project $1 --startup-project $2 --context "$3Context" # create migration
-  dotnet ef migrations script --project $1 --startup-project $2 --context "$3Context" --output $1/Migrations/script.sql # create script for review
 
   ################################################## rebuild log database
   docker exec $postgres_container bash -c "dropdb --username=$postgres_user --if-exists --force log" # drop database
@@ -66,6 +64,11 @@ build_database(){
     exception text not null,
     constraint pk_log primary key (id)
   );'
+
+  ################################################## recreate migration
+  rm -rf $1/Migrations # remove migration folder
+  dotnet ef migrations add initial --project $1 --startup-project $2 --context "$3Context" # create migration
+  dotnet ef migrations script --project $1 --startup-project $2 --context "$3Context" --output $1/Migrations/script.sql # create script for review
 
   ################################################## rebuild identity database
   docker exec $postgres_container bash -c "dropdb --username=$postgres_user --if-exists --force $dbname" # drop database

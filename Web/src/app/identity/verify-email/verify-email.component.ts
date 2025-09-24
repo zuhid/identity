@@ -19,6 +19,7 @@ export class VerifyEmailComponent {
         emailToken: params.get('emailToken') ?? ""
       };
       var result = await this.userService.emailVerify(model);
+      alert(result);
       if (result) {
         this.router.navigate(["/identity/login"]);
       }

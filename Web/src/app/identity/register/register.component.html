@@ -1,4 +1,11 @@
-<zc-card header="Register" saveText="Register" (saveClick)="onRegister()">
+<zc-card header="Register">
   <zc-text label="Email" [(ngModel)]='model.email'></zc-text>
   <zc-password label="Password" [(ngModel)]='model.password'></zc-password>
+  <zc-password label="Confirm Password" [(ngModel)]='model.confirmPassword'></zc-password>
+  <zc-text label="Phone" [(ngModel)]='model.phone'></zc-text>
+  <ng-container zc-card-footer>
+    <zc-button text="Register" (click)="register()"></zc-button>
+    <zc-button text="Go to Login" (click)="goToLogin()"></zc-button>
+  </ng-container>
 </zc-card>
+

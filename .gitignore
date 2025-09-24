@@ -1,7 +1,9 @@
 .angular
 .vs
 bin
+dist
 Migrations
 node_modules
 obj
 TestResults
+Output

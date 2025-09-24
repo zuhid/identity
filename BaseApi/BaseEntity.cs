@@ -6,12 +6,12 @@ namespace Zuhid.BaseApi;
 
 public class BaseEntity //: IEntity
 {
-    public Guid Id { get; set; }
+  public Guid Id { get; set; }
 
-    [JsonIgnore]
-    public Guid UpdatedById { get; set; }
+  [JsonIgnore]
+  public Guid UpdatedById { get; set; }
 
-    [ConcurrencyCheck]
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public DateTime UpdatedDate { get; set; }
+  [ConcurrencyCheck]
+  [DatabaseGenerated(DatabaseGeneratedOption.None)]
+  public DateTime UpdatedDate { get; set; }
 }
