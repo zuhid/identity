@@ -20,7 +20,7 @@ public class IdentityRepository(IdentityContext context) : BaseRepository<Identi
     UpdatedDate = entity.UpdatedDate,
     Email = entity.Email!,
     Password = entity.PasswordHash ?? string.Empty,
-    Phone = entity.PhoneNumber ?? string.Empty,
+    PhoneNumber = entity.PhoneNumber ?? string.Empty,
   });
 
   public async Task<List<Models.User>> Get() => await Query.ToListAsync().ConfigureAwait(false);

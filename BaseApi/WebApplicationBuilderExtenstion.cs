@@ -37,10 +37,14 @@ public static class WebApplicationBuilderExtenstion {
   public static void AddDatabase<ITContext, TContext>(this WebApplicationBuilder builder, string connectionString)
       where ITContext : class
       where TContext : DbContext, ITContext {
-    builder.Services.AddDbContext<TContext>(options => options
-      .UseNpgsql(connectionString)
-      .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // setting to no tracking to improve performance
-    );
+    builder.Services.AddDbContext<TContext>(options => {
+      options
+        .UseNpgsql(connectionString)
+        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);// setting to no tracking to improve performance
+      if (builder.Environment.IsDevelopment()) {
+        options.EnableSensitiveDataLogging(); // log sql param values
+      }
+    });
     builder.Services.AddScoped<ITContext, TContext>();
   }
 

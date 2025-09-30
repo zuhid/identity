@@ -30,6 +30,27 @@ public class DatabaseLogger(LogContext logContext, string categoryName) : ILogge
       // Ignore exception thrown during loggging
       Console.WriteLine(ex.Message);
     }
+
+    // var queryString = $@"insert into public.Log(id,updated,log_level,category,event_id,event_name,state,exception) values(@Id,@Updated,@LogLevel,@Category,@EventId,@EventName,@State,@Exception)";
+    // using var connection = new NpgsqlConnection(logContext.Database.GetConnectionString());
+    // using var command = new NpgsqlCommand(queryString, connection);
+    // command.Parameters.AddWithValue("@Id", Guid.NewGuid());
+    // command.Parameters.AddWithValue("@Updated", DateTime.UtcNow);
+    // command.Parameters.AddWithValue("@LogLevel", logLevel.ToString());
+    // command.Parameters.AddWithValue("@Category", categoryName ?? "none");
+    // command.Parameters.AddWithValue("@EventId", $"{eventId.Id}");
+    // command.Parameters.AddWithValue("@EventName", eventId.Name ?? "");
+    // command.Parameters.AddWithValue("@State", state?.ToString() ?? "");
+    // command.Parameters.AddWithValue("@Exception", Formatter(exception));
+
+    // try {
+    //   command.Connection?.Open();
+    //   command.ExecuteNonQuery();
+    // } catch (Exception ex) {
+    //   Console.WriteLine(ex.Message); // Ignore exception thrown during loggging
+    // } finally {
+    //   command.Connection?.Close();
+    // }
   }
 
   private static string Formatter(Exception? exception) {

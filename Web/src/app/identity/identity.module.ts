@@ -10,14 +10,12 @@ import { UserComponent } from './user/user.component';
 import { AccountComponent } from './account/account.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
-import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 const routes: Routes = [
   { path: "register", component: RegisterComponent },
   { path: "login", component: LoginComponent },
   { path: "user", component: UserComponent, canActivate: [AuthenticationGuard], canActivateChild: [AuthorizationGuard] },
   { path: "account", component: AccountComponent, canActivate: [AuthenticationGuard], canActivateChild: [AuthorizationGuard] },
-  { path: "verify-email", component: VerifyEmailComponent },
   { path: "**", redirectTo: "login" },
   // old
 

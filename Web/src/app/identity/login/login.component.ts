@@ -22,7 +22,7 @@ export class LoginComponent {
   async login() {
     let loginResponse = await this.userService.login(this.model);
     this.tokenService.setAuthToken(loginResponse?.authToken);
-    this.router.navigate(["/identity/tfa"]);
+    this.router.navigate(["/identity/account"]);
   }
   // async smsToken() { this.identityService.smsToken(this.model); }
   // async emailToken() { this.identityService.emailToken(this.model); }

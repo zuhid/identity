@@ -14,7 +14,7 @@ public class UserMapper : BaseMapper<Models.User, Entities.User>, IUserMapper {
       Id = model.Id,
       UserName = model.Email,
       Email = model.Email,
-      PhoneNumber = model.Phone,
+      PhoneNumber = model.PhoneNumber,
       UpdatedDate = DateTime.UtcNow,
     };
   }

@@ -30,7 +30,7 @@ public class UserController(UserRepository userRepository, IIdentityRepository i
       var emailToken = await userManager.GenerateEmailConfirmationTokenAsync(userEntity).ConfigureAwait(false);
       var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
       return await messageService.SendEmail("Your verification code",
-          $"<a href='http://localhost:4200/identity/verify-email?email={userEntity.Email}&emailToken={encodedToken}'>Click to veirfy your Email</a>",
+          $"<a href='http://localhost:4200/identity/register?email={userEntity.Email}&emailToken={encodedToken}'>Click to veirfy your Email</a>",
           userEntity.Email ?? ""
           ).ConfigureAwait(false);
     }
@@ -110,7 +110,7 @@ public class UserController(UserRepository userRepository, IIdentityRepository i
   [HttpPut("PhoneVerifyToken")]
   public async Task<bool> PhoneVerifyToken(User user) {
     ArgumentNullException.ThrowIfNull(user);
-    var userEntity = await userManager.FindByEmailAsync(user.Phone).ConfigureAwait(false);
+    var userEntity = await userManager.FindByEmailAsync(user.PhoneNumber).ConfigureAwait(false);
     return userEntity != null
       && await userManager.VerifyTwoFactorTokenAsync(userEntity, TokenOptions.DefaultPhoneProvider, user.PhoneToken).ConfigureAwait(false);
   }

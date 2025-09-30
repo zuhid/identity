@@ -8,7 +8,7 @@ public class UserRepository(IdentityContext context, UserManager<Entities.User> 
     return await userManager.Users.Select(u => new Models.User {
       Id = u.Id,
       Email = u.Email ?? string.Empty,
-      Phone = u.PhoneNumber ?? string.Empty
+      PhoneNumber = u.PhoneNumber ?? string.Empty
     }).ToListAsync().ConfigureAwait(false);
   }
 }

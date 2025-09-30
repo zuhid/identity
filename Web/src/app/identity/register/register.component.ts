@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '@src/clients';
 import { User } from '@src/models';
 import { ToastService } from '@src/services';
@@ -15,9 +15,14 @@ export class RegisterComponent {
     email: 'admin@company.com',
     password: 'P@ssw0rd',
     confirmPassword: 'P@ssw0rd',
+    phone: '789-456-1230'
   };
 
-  constructor(private userService: UserService, private toastService: ToastService, private router: Router) { }
+  constructor(private userService: UserService, private toastService: ToastService, private route: ActivatedRoute, private router: Router) { }
+
+  async ngOnInit(): Promise<void> {
+    await this.verifyEmail();
+  }
 
   async register() {
     if (this.validateModel()) {
@@ -28,7 +33,28 @@ export class RegisterComponent {
     }
   }
 
-  async goToLogin() { this.router.navigate(["/identity/login"]);}
+  async verifyEmail() {
+    this.route.queryParamMap.subscribe(async params => {
+      let model: User = {
+        email: params.get('email') ?? "",
+        emailToken: params.get('emailToken') ?? ""
+      };
+      if (model.email != "" && model.emailToken != "") {
+        var result = await this.userService.emailVerify(model);
+        if (result) {
+          this.toastService.info("Email has been verified.");
+          this.goToLogin();
+        }
+        else {
+          this.toastService.error(result);
+        }
+      }
+    });
+  }
+
+  async goToLogin() {
+    this.router.navigate(["/identity/login"]);
+  }
 
   validateModel(): boolean {
     var isValid = true;
